@@ -25,9 +25,11 @@ import org.archive.modules.CrawlURI;
 import org.archive.spring.HasKeyedProperties;
 import org.archive.spring.KeyedProperties;
 
+@SuppressWarnings("serial")
 public abstract class DecideRule implements Serializable, HasKeyedProperties {
     protected KeyedProperties kp = new KeyedProperties();
-    public KeyedProperties getKeyedProperties() {
+    @Override
+	public KeyedProperties getKeyedProperties() {
         return kp;
     }
     

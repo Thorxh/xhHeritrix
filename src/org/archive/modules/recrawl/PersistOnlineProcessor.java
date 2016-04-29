@@ -57,14 +57,15 @@ implements Lifecycle {
         this.historyDbName = name; 
     }
 
-    @SuppressWarnings("unchecked")
-    protected StoredSortedMap<String,Map> store;
+    @SuppressWarnings("rawtypes")
+	protected StoredSortedMap<String,Map> store;
     protected Database historyDb;
 
     public PersistOnlineProcessor() {
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
+	@Override
     public void start() {
         // TODO: share single store instance between Load and Store processors
         // (shared context? EnhancedEnvironment?)
@@ -90,11 +91,13 @@ implements Lifecycle {
         store = historyMap;
     }
     
-    public boolean isRunning() {
+    @Override
+	public boolean isRunning() {
         return historyDb != null; 
     }
 
-    public void stop() {
+    @Override
+	public void stop() {
         if (!isRunning()) {
             return;
         }

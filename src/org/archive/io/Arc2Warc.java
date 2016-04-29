@@ -36,12 +36,12 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
+import org.archive.format.warc.WARCConstants;
+import org.archive.format.warc.WARCConstants.WARCRecordType;
 import org.archive.io.arc.ARCConstants;
 import org.archive.io.arc.ARCReader;
 import org.archive.io.arc.ARCReaderFactory;
 import org.archive.io.arc.ARCRecord;
-import org.archive.format.warc.WARCConstants;
-import org.archive.format.warc.WARCConstants.WARCRecordType;
 import org.archive.io.warc.WARCRecordInfo;
 import org.archive.io.warc.WARCWriter;
 import org.archive.io.warc.WARCWriterPoolSettings;
@@ -60,6 +60,7 @@ import org.joda.time.format.ISODateTimeFormat;
  * @author stack
  * @version $Date$ $Revision$
  */
+@SuppressWarnings("deprecation")
 public class Arc2Warc {
     protected RecordIDGenerator generator = new UUIDGenerator();
     

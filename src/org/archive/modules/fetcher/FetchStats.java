@@ -130,6 +130,8 @@ public class FetchStats implements Serializable, FetchStatusCodes, Reporter {
                 }
                 fetchFailures++;
                 break;
+            default: 
+            	break;
         }
     }
     

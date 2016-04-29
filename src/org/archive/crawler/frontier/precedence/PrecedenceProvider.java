@@ -26,7 +26,6 @@ import java.util.Map;
 import org.archive.modules.CrawlURI;
 import org.archive.modules.fetcher.FetchStats;
 import org.archive.modules.fetcher.FetchStats.Stage;
-import org.archive.util.ArchiveUtils;
 import org.archive.util.ReportUtils;
 import org.archive.util.Reporter;
 
@@ -44,7 +43,8 @@ FetchStats.CollectsFetchStats, Serializable {
     /* (non-Javadoc)
      * @see org.archive.modules.fetcher.FetchStats.CollectsFetchStats#tally(org.archive.modules.CrawlURI, org.archive.modules.fetcher.FetchStats.Stage)
      */
-    public void tally(CrawlURI curi, Stage stage) {
+    @Override
+	public void tally(CrawlURI curi, Stage stage) {
         // by default do nothing; subclasses do more
     }
 

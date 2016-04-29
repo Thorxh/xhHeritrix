@@ -54,7 +54,8 @@ public class BenchmarkUriUniqFilters implements UriUniqFilter.CrawlUriReceiver {
         (new BenchmarkUriUniqFilters()).instanceMain(args);
     }
     
-    public void instanceMain(String[] args) throws IOException {
+    @SuppressWarnings("resource")
+	public void instanceMain(String[] args) throws IOException {
         String testClass = args[0];
         String inputFilename = args[1];
         long start = System.currentTimeMillis();
@@ -106,7 +107,8 @@ public class BenchmarkUriUniqFilters implements UriUniqFilter.CrawlUriReceiver {
     /* (non-Javadoc)
      * @see org.archive.crawler.datamodel.UriUniqFilter.HasUriReceiver#receive(org.archive.crawler.datamodel.CrawlURI)
      */
-    public void receive(CrawlURI item) {
+    @Override
+	public void receive(CrawlURI item) {
         if(out!=null) {
             try {
                 // we assume all tested filters are immediate passthrough so

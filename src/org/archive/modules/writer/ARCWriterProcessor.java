@@ -57,6 +57,7 @@ import org.archive.util.ArchiveUtils;
  *
  * @author Parker Thompson
  */
+@SuppressWarnings("deprecation")
 public class ARCWriterProcessor extends WriterPoolProcessor {
 
     final static private String METADATA_TEMPLATE = readMetadataTemplate();
@@ -67,10 +68,12 @@ public class ARCWriterProcessor extends WriterPoolProcessor {
     private static final Logger logger = 
         Logger.getLogger(ARCWriterProcessor.class.getName());
 
-    public long getDefaultMaxFileSize() {
+    @Override
+	public long getDefaultMaxFileSize() {
         return 100000000L; // 100 SI mega-bytes (10^8 bytes)
     }
-    public List<ConfigPath> getDefaultStorePaths() {
+    @Override
+	public List<ConfigPath> getDefaultStorePaths() {
         List<ConfigPath> paths = new ArrayList<ConfigPath>();
         paths.add(new ConfigPath("arcs default store path", "arcs"));
         return paths;
@@ -94,8 +97,9 @@ public class ARCWriterProcessor extends WriterPoolProcessor {
      *
      * @param curi CrawlURI to process.
      */
-    protected ProcessResult innerProcessResult(CrawlURI puri) {
-        CrawlURI curi = (CrawlURI)puri;
+    @Override
+	protected ProcessResult innerProcessResult(CrawlURI puri) {
+        CrawlURI curi = puri;
         
         long recordLength = getRecordedSize(curi);
         
@@ -119,7 +123,8 @@ public class ARCWriterProcessor extends WriterPoolProcessor {
         return ProcessResult.PROCEED;
     }
     
-    protected ProcessResult write(CrawlURI curi, long recordLength, 
+    @SuppressWarnings("resource")
+	protected ProcessResult write(CrawlURI curi, long recordLength, 
             InputStream in, String ip)
     throws IOException {
         WriterPoolMember writer = getPool().borrowFile();
@@ -142,7 +147,7 @@ public class ARCWriterProcessor extends WriterPoolProcessor {
             if (in instanceof ReplayInputStream) {
                 w.write(curi.toString(), curi.getContentType(),
                     ip, curi.getFetchBeginTime(),
-                    recordLength, (ReplayInputStream)in);
+                    recordLength, in);
             } else {
                 w.write(curi.toString(), curi.getContentType(),
                     ip, curi.getFetchBeginTime(),
@@ -178,7 +183,8 @@ public class ARCWriterProcessor extends WriterPoolProcessor {
         return checkBytesWritten();
     }
 
-    public List<String> getMetadata() {
+    @Override
+	public List<String> getMetadata() {
         if (METADATA_TEMPLATE == null) {
             return null;
         }

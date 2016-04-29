@@ -37,6 +37,7 @@ import org.archive.util.fingerprint.LongFPSet;
  * @author gojomo
  * @version $Date$, $Revision$
  */
+@SuppressWarnings("serial")
 public abstract class AbstractLongFPSet implements LongFPSet, Serializable {
     private static Logger logger =
         Logger.getLogger("org.archive.util.AbstractLongFPSet");
@@ -85,7 +86,8 @@ public abstract class AbstractLongFPSet implements LongFPSet, Serializable {
      *
      * @see org.archive.util.fingerprint.LongFPSet#contains(long)
      */
-    public boolean contains(long val) {
+    @Override
+	public boolean contains(long val) {
         long i = indexFor(val);
         if (slotHasData(i)) {
             noteAccess(i);
@@ -117,7 +119,8 @@ public abstract class AbstractLongFPSet implements LongFPSet, Serializable {
      *
      * @see org.archive.util.fingerprint.LongFPSet#count()
      */
-    public long count() {
+    @Override
+	public long count() {
         return count;
     }
 
@@ -126,7 +129,8 @@ public abstract class AbstractLongFPSet implements LongFPSet, Serializable {
      *
      * @see org.archive.util.fingerprint.LongFPSet#add(long)
      */
-    public boolean add(long val) {
+    @Override
+	public boolean add(long val) {
         logger.finest("Adding " + val);
         long i = indexFor(val);
         if (slotHasData(i)) {
@@ -217,7 +221,8 @@ public abstract class AbstractLongFPSet implements LongFPSet, Serializable {
         return (val >>> (64 - capacityPowerOfTwo));
     }
 
-    public boolean remove(long l) {
+    @Override
+	public boolean remove(long l) {
         long i = indexFor(l);
         if (!slotHasData(i)) {
             // not present, not changed
@@ -266,7 +271,8 @@ public abstract class AbstractLongFPSet implements LongFPSet, Serializable {
      *
      * @see org.archive.util.fingerprint.LongFPSet#quickContains(long)
      */
-    public boolean quickContains(long fp) {
+    @Override
+	public boolean quickContains(long fp) {
         return false;
     }
 

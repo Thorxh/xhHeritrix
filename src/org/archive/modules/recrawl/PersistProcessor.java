@@ -112,7 +112,8 @@ public abstract class PersistProcessor extends AbstractPersistProcessor {
      * @return number of records
      * @throws DatabaseException
      */
-    private static int copyPersistEnv(File sourceDir, StoredSortedMap<String,Map> historyMap) 
+    @SuppressWarnings("rawtypes")
+	private static int copyPersistEnv(File sourceDir, StoredSortedMap<String,Map> historyMap) 
     throws DatabaseException {
         int count = 0;
 
@@ -158,7 +159,8 @@ public abstract class PersistProcessor extends AbstractPersistProcessor {
      * @throws UnsupportedEncodingException
      * @throws DatabaseException
      */
-    private static int populatePersistEnvFromLog(BufferedReader persistLogReader, StoredSortedMap<String,Map> historyMap) 
+    @SuppressWarnings({ "resource", "rawtypes" })
+	private static int populatePersistEnvFromLog(BufferedReader persistLogReader, StoredSortedMap<String,Map> historyMap) 
     throws UnsupportedEncodingException, DatabaseException {
         int count = 0;
 
@@ -218,7 +220,8 @@ public abstract class PersistProcessor extends AbstractPersistProcessor {
      * @throws DatabaseException
      * @throws IOException
      */
-    public static int populatePersistEnv(String sourcePath, File envFile)
+    @SuppressWarnings("rawtypes")
+	public static int populatePersistEnv(String sourcePath, File envFile)
         throws IOException {
         int count = 0;
         StoredSortedMap<String,Map> historyMap = null;
@@ -270,7 +273,8 @@ public abstract class PersistProcessor extends AbstractPersistProcessor {
      * @throws DatabaseException
      * @throws IOException
      */
-    public static int copyPersistSourceToHistoryMap(File sourceFile,
+    @SuppressWarnings("rawtypes")
+	public static int copyPersistSourceToHistoryMap(File sourceFile,
             StoredSortedMap<String, Map> historyMap) throws DatabaseException,
             IOException {
         // delegate depending on the source
@@ -295,7 +299,8 @@ public abstract class PersistProcessor extends AbstractPersistProcessor {
      * @throws DatabaseException
      * @throws IOException
      */
-    public static int copyPersistSourceToHistoryMap(URL sourceUrl,
+    @SuppressWarnings("rawtypes")
+	public static int copyPersistSourceToHistoryMap(URL sourceUrl,
             StoredSortedMap<String, Map> historyMap) throws DatabaseException,
             IOException {
         BufferedReader persistLogReader = ArchiveUtils

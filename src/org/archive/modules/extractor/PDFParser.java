@@ -18,15 +18,19 @@
  */
 package org.archive.modules.extractor;
 
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfName;
-import com.lowagie.text.pdf.PdfObject;
-import com.lowagie.text.pdf.PdfDictionary;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
+
 import com.lowagie.text.pdf.PRIndirectReference;
 import com.lowagie.text.pdf.PdfArray;
-
-import java.io.*;
-import java.util.*;
+import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfObject;
+import com.lowagie.text.pdf.PdfReader;
 
 
 /** Supports PDF parsing operations.  For now this primarily means
@@ -99,7 +103,8 @@ public class PDFParser {
      * @param doc
      * @throws IOException
      */
-    protected void getInFromFile(String doc) throws IOException{
+    @SuppressWarnings("resource")
+	protected void getInFromFile(String doc) throws IOException{
         File documentOnDisk = new File(doc);
 
         long length = documentOnDisk.length();
@@ -251,7 +256,7 @@ public class PDFParser {
             ArrayList<String> uris = parser.extractURIs();
             Iterator<String> i = uris.iterator();
             while(i.hasNext()){
-                String uri = (String)i.next();
+                String uri = i.next();
                 System.out.println("got uri: " + uri);
             }
         } catch (IOException e) {

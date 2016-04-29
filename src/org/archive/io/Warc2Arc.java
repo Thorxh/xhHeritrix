@@ -54,6 +54,7 @@ import org.archive.util.FileUtils;
  * @author stack
  * @version $Date$ $Revision$
  */
+@SuppressWarnings("deprecation")
 public class Warc2Arc {
    private static void usage(HelpFormatter formatter, Options options,
            int exitCode) {

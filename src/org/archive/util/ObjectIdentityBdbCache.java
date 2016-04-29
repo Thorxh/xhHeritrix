@@ -151,7 +151,8 @@ implements ObjectIdentityCache<V>, Closeable, Serializable {
      * @param classCatalog
      * @throws DatabaseException
      */
-    public void initialize(final Environment env, String dbName,
+    @SuppressWarnings("rawtypes")
+	public void initialize(final Environment env, String dbName,
             final Class valueClass, final StoredClassCatalog classCatalog)
     throws DatabaseException {
         // TODO: initial capacity should be related to number of seeds, max depth, max docs
@@ -168,7 +169,7 @@ implements ObjectIdentityCache<V>, Closeable, Serializable {
         this.count = new AtomicLong(diskMap.size());
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected StoredSortedMap<String, V> createDiskMap(Database database,
             StoredClassCatalog classCatalog, Class valueClass) {
         EntryBinding keyBinding = TupleBinding.getPrimitiveBinding(String.class);
@@ -197,7 +198,8 @@ implements ObjectIdentityCache<V>, Closeable, Serializable {
     /* (non-Javadoc)
      * @see org.archive.util.ObjectIdentityCache#close()
      */
-    public synchronized void close() {
+    @Override
+	public synchronized void close() {
         // Close out my bdb db.
         if (this.db != null) {
             try {
@@ -212,7 +214,8 @@ implements ObjectIdentityCache<V>, Closeable, Serializable {
         }
     }
 
-    protected void finalize() throws Throwable {
+    @Override
+	protected void finalize() throws Throwable {
         close();
         super.finalize();
     }
@@ -220,14 +223,16 @@ implements ObjectIdentityCache<V>, Closeable, Serializable {
     /* (non-Javadoc)
      * @see org.archive.util.ObjectIdentityCache#get(java.lang.String)
      */
-    public V get(final String key) {
+    @Override
+	public V get(final String key) {
         return getOrUse(key,null); 
     }
     
     /* (non-Javadoc)
      * @see org.archive.util.ObjectIdentityCache#get(java.lang.String, org.archive.util.ObjectIdentityBdbCache)
      */
-    public V getOrUse(final String key, Supplier<V> supplierOrNull) {
+    @Override
+	public V getOrUse(final String key, Supplier<V> supplierOrNull) {
         countOfGets.incrementAndGet();
         
         if (countOfGets.get() % 10000 == 0) {
@@ -270,7 +275,7 @@ implements ObjectIdentityCache<V>, Closeable, Serializable {
             }
             
             // check disk 
-            V valDisk = (V) diskMap.get(key); 
+            V valDisk = diskMap.get(key); 
             if(valDisk==null) {
                 // never yet created, consider creating
                 if(supplierOrNull==null) {
@@ -309,7 +314,8 @@ implements ObjectIdentityCache<V>, Closeable, Serializable {
     /* (non-Javadoc)
      * @see org.archive.util.ObjectIdentityCache#keySet()
      */
-    public Set<String> keySet() {
+    @Override
+	public Set<String> keySet() {
         return diskMap.keySet();
     }
     
@@ -353,7 +359,8 @@ implements ObjectIdentityCache<V>, Closeable, Serializable {
     /* (non-Javadoc)
      * @see org.archive.util.ObjectIdentityCache#size()
      */
-    public int size() {
+    @Override
+	public int size() {
         if(db==null) {
             return 0; 
         }
@@ -375,7 +382,8 @@ implements ObjectIdentityCache<V>, Closeable, Serializable {
     /**
      * Sync all in-memory map entries to backing disk store.
      */
-    public synchronized void sync() {
+    @Override
+	public synchronized void sync() {
         String dbName = null;
         // Sync. memory and disk.
         useStatsSyncUsed.incrementAndGet();
@@ -527,14 +535,16 @@ implements ObjectIdentityCache<V>, Closeable, Serializable {
             this.phantom = new PhantomEntry<V>(key, referent);
         }
 
-        public V get() {
+        @Override
+		public V get() {
             // ensure visibility 
             synchronized (this) {
                 return super.get();
             }
         }
 
-        public String toString() {
+        @Override
+		public String toString() {
             if (phantom != null) {
                 return "SoftEntry(key=" + phantom.key + ")";
             } else {
@@ -554,7 +564,8 @@ implements ObjectIdentityCache<V>, Closeable, Serializable {
         /** When collected/finalized -- as should be expected in 
          *  low-memory conditions -- trigger an expunge and a 
          *  new 'canary' insertion. */
-        public void finalize() {
+        @Override
+		public void finalize() {
             ObjectIdentityBdbCache.this.pageOutStaleEntries();
 //            System.err.println("CANARY KILLED - "+ObjectIdentityBdbCache.this);
             // only install new canary if map still 'open' with db reference

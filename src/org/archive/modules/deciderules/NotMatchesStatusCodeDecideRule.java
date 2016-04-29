@@ -1,7 +1,6 @@
 package org.archive.modules.deciderules;
 
 import org.archive.modules.CrawlURI;
-import org.apache.commons.httpclient.HttpMethod;
 
 /**
  * Provides a rule that returns "true" for any CrawlURIs which has a fetch
@@ -11,6 +10,7 @@ import org.apache.commons.httpclient.HttpMethod;
  * 
  * @author cmiles74
  */
+@SuppressWarnings("serial")
 public class NotMatchesStatusCodeDecideRule extends PredicatedDecideRule {
 
     /** Default lower bound */

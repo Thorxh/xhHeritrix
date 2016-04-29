@@ -23,8 +23,8 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -124,7 +124,8 @@ implements ObjectIdentityCache<V>, Closeable, Serializable, MapEvictionListener<
      * @param classCatalog
      * @throws DatabaseException
      */
-    public void initialize(final Environment env, String dbName,
+    @SuppressWarnings("rawtypes")
+	public void initialize(final Environment env, String dbName,
             final Class valueClass, final StoredClassCatalog classCatalog)
     throws DatabaseException {
         // TODO: tune capacity for actual threads, expected size of key caches? 
@@ -140,7 +141,7 @@ implements ObjectIdentityCache<V>, Closeable, Serializable, MapEvictionListener<
         this.count = new AtomicLong(diskMap.size());
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected StoredSortedMap<String, V> createDiskMap(Database database,
             StoredClassCatalog classCatalog, Class valueClass) {
         EntryBinding keyBinding = TupleBinding.getPrimitiveBinding(String.class);
@@ -169,7 +170,8 @@ implements ObjectIdentityCache<V>, Closeable, Serializable, MapEvictionListener<
     /* (non-Javadoc)
      * @see org.archive.util.ObjectIdentityCache#close()
      */
-    public synchronized void close() {
+    @Override
+	public synchronized void close() {
         // Close out my bdb db.
         if (this.db != null) {
             try {
@@ -184,7 +186,8 @@ implements ObjectIdentityCache<V>, Closeable, Serializable, MapEvictionListener<
         }
     }
 
-    protected void finalize() throws Throwable {
+    @Override
+	protected void finalize() throws Throwable {
         close();
         super.finalize();
     }
@@ -192,14 +195,16 @@ implements ObjectIdentityCache<V>, Closeable, Serializable, MapEvictionListener<
     /* (non-Javadoc)
      * @see org.archive.util.ObjectIdentityCache#get(java.lang.String)
      */
-    public V get(final String key) {
+    @Override
+	public V get(final String key) {
         return getOrUse(key,null); 
     }
     
     /* (non-Javadoc)
      * @see org.archive.util.ObjectIdentityCache#get(java.lang.String, org.archive.util.ObjectIdentityBdbCache)
      */
-    public V getOrUse(final String key, Supplier<V> supplierOrNull) {
+    @Override
+	public V getOrUse(final String key, Supplier<V> supplierOrNull) {
         countOfGets.incrementAndGet();
         
         if (countOfGets.get() % 10000 == 0) {
@@ -250,7 +255,8 @@ implements ObjectIdentityCache<V>, Closeable, Serializable, MapEvictionListener<
     /* (non-Javadoc)
      * @see org.archive.util.ObjectIdentityCache#keySet()
      */
-    public Set<String> keySet() {
+    @Override
+	public Set<String> keySet() {
         return diskMap.keySet();
     }
     
@@ -298,7 +304,8 @@ implements ObjectIdentityCache<V>, Closeable, Serializable, MapEvictionListener<
     /* (non-Javadoc)
      * @see org.archive.util.ObjectIdentityCache#size()
      */
-    public int size() {
+    @Override
+	public int size() {
         if(db==null) {
             return 0; 
         }
@@ -320,7 +327,8 @@ implements ObjectIdentityCache<V>, Closeable, Serializable, MapEvictionListener<
     /**
      * Sync all in-memory map entries to backing disk store.
      */
-    public synchronized void sync() {
+    @Override
+	public synchronized void sync() {
         String dbName = null;
         // Sync. memory and disk.
         useStatsSyncUsed.incrementAndGet();

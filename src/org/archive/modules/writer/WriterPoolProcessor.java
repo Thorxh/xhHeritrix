@@ -48,7 +48,6 @@ import org.archive.modules.net.CrawlHost;
 import org.archive.modules.net.ServerCache;
 import org.archive.spring.ConfigPath;
 import org.archive.util.FileUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +71,8 @@ implements Lifecycle, Checkpointable, WriterPoolSettings {
      * by default true, meaning do-compress. 
      */
     protected boolean compress = true; 
-    public boolean getCompress() {
+    @Override
+	public boolean getCompress() {
         return compress;
     }
     public void setCompress(boolean compress) {
@@ -85,7 +85,8 @@ implements Lifecycle, Checkpointable, WriterPoolSettings {
      * In the default/recommended naming formula, the prefix will appear first. 
      */
     protected String prefix = WriterPoolMember.DEFAULT_PREFIX; 
-    public String getPrefix() {
+    @Override
+	public String getPrefix() {
         return prefix;
     }
     public void setPrefix(String prefix) {
@@ -111,7 +112,8 @@ implements Lifecycle, Checkpointable, WriterPoolSettings {
      * 
      */
     protected String template = WriterPoolMember.DEFAULT_TEMPLATE; 
-    public String getTemplate() {
+    @Override
+	public String getTemplate() {
         return template;
     }
     public void setTemplate(String template) {
@@ -123,7 +125,8 @@ implements Lifecycle, Checkpointable, WriterPoolSettings {
      */
     protected long maxFileSizeBytes = getDefaultMaxFileSize();
     protected abstract long getDefaultMaxFileSize();
-    public long getMaxFileSizeBytes() {
+    @Override
+	public long getMaxFileSizeBytes() {
         return maxFileSizeBytes;
     }
     public void setMaxFileSizeBytes(long maxFileSizeBytes) {
@@ -194,7 +197,8 @@ implements Lifecycle, Checkpointable, WriterPoolSettings {
      * record), or not. Default is true. 
      */
     protected boolean frequentFlushes = true; 
-    public boolean getFrequentFlushes() {
+    @Override
+	public boolean getFrequentFlushes() {
         return frequentFlushes; 
     }
     public void setFrequentFlushes(boolean frequentFlushes) {
@@ -205,7 +209,8 @@ implements Lifecycle, Checkpointable, WriterPoolSettings {
      * Size of buffer in front of disk-writing. Default is 256K.
      */
     protected int writeBufferSize = 256*1024; 
-    public int getWriteBufferSize() {
+    @Override
+	public int getWriteBufferSize() {
         return writeBufferSize; 
     }
     public void setWriteBufferSize(int writeBufferSize) {
@@ -288,7 +293,8 @@ implements Lifecycle, Checkpointable, WriterPoolSettings {
     }
 
 
-    public synchronized void start() {
+    @Override
+	public synchronized void start() {
         if (isRunning()) {
             return;
         }
@@ -296,7 +302,8 @@ implements Lifecycle, Checkpointable, WriterPoolSettings {
         setupPool(serial);
     }
     
-    public void stop() {
+    @Override
+	public void stop() {
         if (!isRunning()) {
             return;
         }
@@ -308,7 +315,7 @@ implements Lifecycle, Checkpointable, WriterPoolSettings {
     
     
     protected AtomicInteger getSerialNo() {
-        return ((WriterPool)getPool()).getSerialNo();
+        return getPool().getSerialNo();
     }
 
     /**
@@ -404,7 +411,8 @@ implements Lifecycle, Checkpointable, WriterPoolSettings {
         return h.getIP().getHostAddress();
     }
 
-    public void doCheckpoint(Checkpoint checkpointInProgress)
+    @Override
+	public void doCheckpoint(Checkpoint checkpointInProgress)
             throws IOException {
         if (getStartNewFilesOnCheckpoint()) {
             this.pool.close();
@@ -446,9 +454,11 @@ implements Lifecycle, Checkpointable, WriterPoolSettings {
         this.totalBytesWritten = totalBytesWritten;
     }
 	
-    public abstract List<String> getMetadata();
+    @Override
+	public abstract List<String> getMetadata();
     
-    public List<File> calcOutputDirs() {
+    @Override
+	public List<File> calcOutputDirs() {
         List<ConfigPath> list = getStorePaths();
         ArrayList<File> results = new ArrayList<File>();
         for (ConfigPath path: list) {
@@ -475,7 +485,8 @@ implements Lifecycle, Checkpointable, WriterPoolSettings {
     @Override
     protected abstract ProcessResult innerProcessResult(CrawlURI uri);
 
-    protected boolean shouldProcess(CrawlURI curi) {
+    @Override
+	protected boolean shouldProcess(CrawlURI curi) {
         // If failure, or we haven't fetched the resource yet, return
         if (curi.getFetchStatus() <= 0) {
             return false;

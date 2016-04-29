@@ -61,7 +61,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @version $Revision$ $Date$
  */
-@SuppressWarnings({"serial","unchecked"}) // <- HERITRIX CHANGE
+@SuppressWarnings({"serial", "rawtypes"}) // <- HERITRIX CHANGE
 public class Cookie extends NameValuePair implements Serializable, Comparator {
 
     // ----------------------------------------------------------- Constructors
@@ -401,7 +401,8 @@ public class Cookie extends NameValuePair implements Serializable, Comparator {
      * {@link Object#hashCode} general hashCode contract.
      * @return A hash code
      */
-    public int hashCode() {
+    @Override
+	public int hashCode() {
         int hash = LangUtils.HASH_SEED;
         hash = LangUtils.hashCode(hash, this.getName());
         hash = LangUtils.hashCode(hash, this.cookieDomain);
@@ -415,7 +416,8 @@ public class Cookie extends NameValuePair implements Serializable, Comparator {
      * @param obj The object to compare against.
      * @return true if the two objects are equal.
      */
-    public boolean equals(Object obj) {
+    @Override
+	public boolean equals(Object obj) {
         if (obj == null) return false;
         if (this == obj) return true;
         if (obj instanceof Cookie) {
@@ -454,7 +456,8 @@ public class Cookie extends NameValuePair implements Serializable, Comparator {
      * @param o2 The second object to be compared
      * @return See {@link java.util.Comparator#compare(Object,Object)}
      */
-    public int compare(Object o1, Object o2) {
+    @Override
+	public int compare(Object o1, Object o2) {
         LOG.trace("enter Cookie.compare(Object, Object)");
 
         if (!(o1 instanceof Cookie)) {
@@ -497,7 +500,8 @@ public class Cookie extends NameValuePair implements Serializable, Comparator {
      * 
      * @see #toExternalForm
      */
-    public String toString() {
+    @Override
+	public String toString() {
         return toExternalForm();
     }
 

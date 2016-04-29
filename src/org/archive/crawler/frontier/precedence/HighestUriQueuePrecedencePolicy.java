@@ -61,7 +61,7 @@ public class HighestUriQueuePrecedencePolicy extends BaseQueuePrecedencePolicy {
         /* (non-Javadoc)
          * @see org.archive.crawler.frontier.precedence.PrecedenceProvider#tally(org.archive.modules.CrawlURI, org.archive.modules.fetcher.FetchStats.Stage)
          */
-        @Override
+		@Override
         public void tally(CrawlURI curi, Stage stage) {
             switch(stage) {
             case SCHEDULED:
@@ -77,6 +77,8 @@ public class HighestUriQueuePrecedencePolicy extends BaseQueuePrecedencePolicy {
             case RETRIED:
                 // do nothing, already tallied
                 break;
+            default:
+                	break;
             }
         }
 

@@ -35,6 +35,7 @@ import org.archive.modules.CrawlURI;
  * 
  * @author gojomo
  */
+@SuppressWarnings("serial")
 public abstract class SetBasedUriUniqFilter implements UriUniqFilter, Serializable {
     private static Logger LOGGER =
         Logger.getLogger(SetBasedUriUniqFilter.class.getName());
@@ -60,16 +61,19 @@ public abstract class SetBasedUriUniqFilter implements UriUniqFilter, Serializab
 
     protected abstract long setCount();
     
-    public long count() {
+    @Override
+	public long count() {
         return setCount();
     }
 
-    public long pending() {
+    @Override
+	public long pending() {
         // no items pile up in this implementation
         return 0;
     }
 
-    public void setDestination(CrawlUriReceiver receiver) {
+    @Override
+	public void setDestination(CrawlUriReceiver receiver) {
         this.receiver = receiver;
     }
 
@@ -79,7 +83,8 @@ public abstract class SetBasedUriUniqFilter implements UriUniqFilter, Serializab
         }
     }
     
-    public void add(String key, CrawlURI value) {
+    @Override
+	public void add(String key, CrawlURI value) {
         profileLog(key);
         if (setAdd(key)) {
             this.receiver.receive(value);
@@ -94,37 +99,44 @@ public abstract class SetBasedUriUniqFilter implements UriUniqFilter, Serializab
         }
     }
 
-    public void addNow(String key, CrawlURI value) {
+    @Override
+	public void addNow(String key, CrawlURI value) {
         add(key, value);
     }
     
-    public void addForce(String key, CrawlURI value) {
+    @Override
+	public void addForce(String key, CrawlURI value) {
         profileLog(key);
         setAdd(key);
         this.receiver.receive(value);
     }
 
-    public void note(String key) {
+    @Override
+	public void note(String key) {
         profileLog(key);
         setAdd(key);
     }
 
-    public void forget(String key, CrawlURI value) {
+    @Override
+	public void forget(String key, CrawlURI value) {
         setRemove(key);
     }
 
-    public long requestFlush() {
+    @Override
+	public long requestFlush() {
         // unnecessary; all actions with set-based uniqfilter are immediate
         return 0;
     }
 
-    public void close() {
+    @Override
+	public void close() {
         if (profileLog != null) {
             profileLog.close();
         }
     }
 
-    public void setProfileLog(File logfile) {
+    @Override
+	public void setProfileLog(File logfile) {
         try {
             profileLog = new PrintWriter(new BufferedOutputStream(
                     new FileOutputStream(logfile)));

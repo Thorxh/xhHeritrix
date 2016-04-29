@@ -191,8 +191,8 @@ public class Heritrix {
     
     public void instanceMain(String[] args)
     throws Exception {
-        System.out.println(System.getProperty("java.vendor")
-                + ' ' + System.getProperty("java.runtime.name") 
+        System.out.println(System.getProperty("java.vendor")	//运行时环境供应商
+                + ' ' + System.getProperty("java.runtime.name")
                 + ' ' + System.getProperty("java.runtime.version"));
         
         // ensure using java 1.6+ before hitting a later cryptic error

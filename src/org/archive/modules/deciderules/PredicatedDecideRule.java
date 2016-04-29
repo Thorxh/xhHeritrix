@@ -27,6 +27,7 @@ import org.archive.modules.CrawlURI;
  *
  * @author gojomo
  */
+@SuppressWarnings("serial")
 public abstract class PredicatedDecideRule extends DecideRule {
 
     {

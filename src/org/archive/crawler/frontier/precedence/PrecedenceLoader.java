@@ -96,7 +96,8 @@ public class PrecedenceLoader {
      * @throws UnsupportedEncodingException
      * @throws IOException
      */
-    private static void main2args(String[] args) throws DatabaseException,
+    @SuppressWarnings("resource")
+	private static void main2args(String[] args) throws DatabaseException,
             FileNotFoundException, UnsupportedEncodingException, IOException {
         File source = new File(args[0]);
         File env = new File(args[1]);
@@ -120,7 +121,7 @@ public class PrecedenceLoader {
             BufferedReader br = ArchiveUtils.getBufferedReader(source);
             Iterator<String> iter = new LineReadingIterator(br);
             while(iter.hasNext()) {
-                String line = (String) iter.next(); 
+                String line = iter.next(); 
                 String[] splits = line.split("\\s");
                 String uri = splits[0];
                 if(!uri.matches("\\w+:.*")) {

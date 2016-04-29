@@ -55,7 +55,7 @@ public class RecyclingSerialBinding<K> extends SerialBinding<K> {
      * @param baseClass is the base class for serialized objects stored using
      * this binding
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public RecyclingSerialBinding(ClassCatalog classCatalog, Class baseClass) {
         super(classCatalog, baseClass);
         this.classCatalog = classCatalog;
@@ -67,7 +67,9 @@ public class RecyclingSerialBinding<K> extends SerialBinding<K> {
      * 
      * @see com.sleepycat.bind.serial.SerialBinding#entryToObject
      */
-    public void objectToEntry(Object object, DatabaseEntry entry) {
+    @SuppressWarnings("resource")
+	@Override
+	public void objectToEntry(Object object, DatabaseEntry entry) {
 
         if (baseClass != null && !baseClass.isInstance(object)) {
             throw new IllegalArgumentException(
@@ -95,7 +97,7 @@ public class RecyclingSerialBinding<K> extends SerialBinding<K> {
      * @return FastOutputStream
      */
     private FastOutputStream getFastOutputStream() {
-        FastOutputStream fo = (FastOutputStream) fastOutputStreamHolder.get();
+        FastOutputStream fo = fastOutputStreamHolder.get();
         if (fo == null) {
             fo = new FastOutputStream();
             fastOutputStreamHolder.set(fo);

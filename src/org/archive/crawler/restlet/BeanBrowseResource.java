@@ -19,16 +19,12 @@
 
 package org.archive.crawler.restlet;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLDecoder;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -36,7 +32,6 @@ import org.apache.commons.lang.StringUtils;
 import org.archive.crawler.restlet.models.BeansModel;
 import org.archive.crawler.restlet.models.ViewModel;
 import org.archive.spring.PathSharingContext;
-import org.archive.util.TextUtils;
 import org.restlet.Context;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
@@ -99,7 +94,8 @@ public class BeanBrowseResource extends JobRelatedResource {
         return _templateConfiguration;
     }
 
-    public void acceptRepresentation(Representation entity) throws ResourceException {
+    @Override
+	public void acceptRepresentation(Representation entity) throws ResourceException {
         if (appCtx == null) {
             throw new ResourceException(404);
         }
@@ -137,7 +133,8 @@ public class BeanBrowseResource extends JobRelatedResource {
         return path; 
     }
 
-    public Representation represent(Variant variant) throws ResourceException {
+    @Override
+	public Representation represent(Variant variant) throws ResourceException {
         if (appCtx == null) {
             throw new ResourceException(404);
         }
@@ -145,14 +142,16 @@ public class BeanBrowseResource extends JobRelatedResource {
         Representation representation;
         if (variant.getMediaType() == MediaType.APPLICATION_XML) {
             representation = new WriterRepresentation(MediaType.APPLICATION_XML) {
-                public void write(Writer writer) throws IOException {
+                @Override
+				public void write(Writer writer) throws IOException {
                     XmlMarshaller.marshalDocument(writer, "beans", makeDataModel());
                 }
             };
         } else {
             representation = new WriterRepresentation(
                     MediaType.TEXT_HTML) {
-                public void write(Writer writer) throws IOException {
+                @Override
+				public void write(Writer writer) throws IOException {
                     BeanBrowseResource.this.writeHtml(writer);
                 }
             };

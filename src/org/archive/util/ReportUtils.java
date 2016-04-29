@@ -29,7 +29,8 @@ public class ReportUtils {
      * @param rep  Reporter to get shortReportLine from
      * @return String of report
      */
-    public static String shortReportLine(Reporter rep) {
+    @SuppressWarnings("deprecation")
+	public static String shortReportLine(Reporter rep) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         try {

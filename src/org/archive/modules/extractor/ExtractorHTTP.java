@@ -39,7 +39,8 @@ public class ExtractorHTTP extends Extractor {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = 3L;
     
-    private static Logger logger =
+    @SuppressWarnings("unused")
+	private static Logger logger =
             Logger.getLogger(ExtractorHTTP.class.getName());
 
     public ExtractorHTTP() {

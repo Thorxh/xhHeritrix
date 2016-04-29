@@ -163,7 +163,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @deprecated no loner used
      */
-    private MethodRetryHandler methodRetryHandler;
+    @Deprecated
+	private MethodRetryHandler methodRetryHandler;
 
     /** True if the connection must be closed when no longer needed */
     private boolean connectionCloseForced = false;
@@ -234,7 +235,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @return the name of this method
      */
-    public abstract String getName();
+    @Override
+	public abstract String getName();
 
     /**
      * Returns the URI of the HTTP method
@@ -245,7 +247,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @see org.apache.commons.httpclient.HttpMethod#getURI()
      */
-    public URI getURI() throws URIException {
+    @Override
+	public URI getURI() throws URIException {
         StringBuffer buffer = new StringBuffer();
         if (this.httphost != null) {
             buffer.append(this.httphost.getProtocol().getScheme());
@@ -277,7 +280,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @since 3.0
      */
-    public void setURI(URI uri) throws URIException {
+    @Override
+	public void setURI(URI uri) throws URIException {
         // only set the host if specified by the URI
         if (uri.isAbsoluteURI()) {
             this.httphost = new HttpHost(uri);
@@ -298,7 +302,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * @param followRedirects <tt>true</tt> if the method will automatically follow redirects,
      * <tt>false</tt> otherwise.
      */
-    public void setFollowRedirects(boolean followRedirects) {
+    @Override
+	public void setFollowRedirects(boolean followRedirects) {
         this.followRedirects = followRedirects;
     }
 
@@ -309,7 +314,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * @return <tt>true</tt> if the method will automatically follow HTTP redirects, 
      * <tt>false</tt> otherwise.
      */
-    public boolean getFollowRedirects() {
+    @Override
+	public boolean getFollowRedirects() {
         return this.followRedirects;
     }
 
@@ -319,7 +325,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @deprecated Use {@link HttpMethodParams#setVersion(HttpVersion)}
      */
-    public void setHttp11(boolean http11) {
+    @Deprecated
+	public void setHttp11(boolean http11) {
         if (http11) {
             this.params.setVersion(HttpVersion.HTTP_1_1);
         } else {
@@ -336,7 +343,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @since 2.0
      */
-    public boolean getDoAuthentication() {
+    @Override
+	public boolean getDoAuthentication() {
         return doAuthentication;
     }
 
@@ -349,7 +357,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @since 2.0
      */
-    public void setDoAuthentication(boolean doAuthentication) {
+    @Override
+	public void setDoAuthentication(boolean doAuthentication) {
         this.doAuthentication = doAuthentication;
     }
 
@@ -363,7 +372,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @deprecated Use {@link HttpMethodParams#getVersion()}
      */
-    public boolean isHttp11() {
+    @Deprecated
+	public boolean isHttp11() {
         return this.params.getVersion().equals(HttpVersion.HTTP_1_1);
     }
 
@@ -375,7 +385,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * @param path the path of the HTTP method. The path is expected
      *        to be URL-encoded
      */
-    public void setPath(String path) {
+    @Override
+	public void setPath(String path) {
         this.path = path;
     }
 
@@ -385,7 +396,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      *
      * @param header the header to add to the request
      */
-    public void addRequestHeader(Header header) {
+    @Override
+	public void addRequestHeader(Header header) {
         LOG.trace("HttpMethodBase.addRequestHeader(Header)");
 
         if (header == null) {
@@ -400,7 +412,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @param footer The footer to add.
      */
-    public void addResponseFooter(Header footer) {
+    @Override
+	public void addResponseFooter(Header footer) {
         getResponseTrailerHeaderGroup().addHeader(footer);
     }
 
@@ -412,7 +425,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      *
      * @return the path to request or "/" if the path is blank.
      */
-    public String getPath() {
+    @Override
+	public String getPath() {
         return (path == null || path.equals("")) ? "/" : path;
     }
 
@@ -425,7 +439,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @see EncodingUtil#formUrlEncode(NameValuePair[], String)
      */
-    public void setQueryString(String queryString) {
+    @Override
+	public void setQueryString(String queryString) {
         this.queryString = queryString;
     }
 
@@ -441,7 +456,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * @see EncodingUtil#formUrlEncode(NameValuePair[], String)
      * @see #setQueryString(String)
      */
-    public void setQueryString(NameValuePair[] params) {
+    @Override
+	public void setQueryString(NameValuePair[] params) {
         LOG.trace("enter HttpMethodBase.setQueryString(NameValuePair[])");
         queryString = EncodingUtil.formUrlEncode(params, "UTF-8");
     }
@@ -451,7 +467,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      *
      * @return The query string
      */
-    public String getQueryString() {
+    @Override
+	public String getQueryString() {
         return queryString;
     }
 
@@ -462,7 +479,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * @param headerName the header's name
      * @param headerValue the header's value
      */
-    public void setRequestHeader(String headerName, String headerValue) {
+    @Override
+	public void setRequestHeader(String headerName, String headerValue) {
         Header header = new Header(headerName, headerValue);
         setRequestHeader(header);
     }
@@ -473,7 +491,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @param header the header
      */
-    public void setRequestHeader(Header header) {
+    @Override
+	public void setRequestHeader(Header header) {
         
         Header[] headers = getRequestHeaderGroup().getHeaders(header.getName());
         
@@ -497,7 +516,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @since 3.0
      */
-    public Header getRequestHeader(String headerName) {
+    @Override
+	public Header getRequestHeader(String headerName) {
         if (headerName == null) {
             return null;
         } else {
@@ -510,14 +530,16 @@ public abstract class HttpMethodBase implements HttpMethod {
      *
      * @return an array of my request headers.
      */
-    public Header[] getRequestHeaders() {
+    @Override
+	public Header[] getRequestHeaders() {
         return getRequestHeaderGroup().getAllHeaders();
     }
 
     /**
      * @see org.apache.commons.httpclient.HttpMethod#getRequestHeaders(java.lang.String)
      */
-    public Header[] getRequestHeaders(String headerName) {
+    @Override
+	public Header[] getRequestHeaders(String headerName) {
         return getRequestHeaderGroup().getHeaders(headerName);
     }
 
@@ -560,7 +582,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @since 3.0
      */
-    public Header[] getResponseHeaders(String headerName) {
+    @Override
+	public Header[] getResponseHeaders(String headerName) {
         return getResponseHeaderGroup().getHeaders(headerName);
     }
 
@@ -569,7 +592,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      *
      * @return the status code associated with the latest response.
      */
-    public int getStatusCode() {
+    @Override
+	public int getStatusCode() {
         return statusLine.getStatusCode();
     }
 
@@ -579,7 +603,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * @return the status line object from the latest response.
      * @since 2.0
      */
-    public StatusLine getStatusLine() {
+    @Override
+	public StatusLine getStatusLine() {
         return statusLine;
     }
 
@@ -597,7 +622,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      *
      * @return an array of response headers.
      */
-    public Header[] getResponseHeaders() {
+    @Override
+	public Header[] getResponseHeaders() {
         return getResponseHeaderGroup().getAllHeaders();
     }
 
@@ -611,7 +637,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      *
      * @return the matching header
      */
-    public Header getResponseHeader(String headerName) {        
+    @Override
+	public Header getResponseHeader(String headerName) {        
         if (headerName == null) {
             return null;
         } else {
@@ -670,7 +697,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * @throws IOException If an I/O (transport) problem occurs while obtaining the 
      * response body.
      */
-    public byte[] getResponseBody() throws IOException {
+    @Override
+	public byte[] getResponseBody() throws IOException {
         if (this.responseBody == null) {
             InputStream instream = getResponseBodyAsStream();
             if (instream != null) {
@@ -708,7 +736,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * @throws IOException If an I/O (transport) problem occurs while obtaining the 
      * response body.
      */
-    public InputStream getResponseBodyAsStream() throws IOException {
+    @Override
+	public InputStream getResponseBodyAsStream() throws IOException {
         if (responseStream != null) {
             return responseStream;
         }
@@ -736,7 +765,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * @throws IOException If an I/O (transport) problem occurs while obtaining the 
      * response body.
      */
-    public String getResponseBodyAsString() throws IOException {
+    @Override
+	public String getResponseBodyAsString() throws IOException {
         byte[] rawdata = null;
         if (responseAvailable()) {
             rawdata = getResponseBody();
@@ -754,7 +784,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      *
      * @return an array of footers
      */
-    public Header[] getResponseFooters() {
+    @Override
+	public Header[] getResponseFooters() {
         return getResponseTrailerHeaderGroup().getAllHeaders();
     }
 
@@ -770,7 +801,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * @param footerName the footer name to match
      * @return the matching footer
      */
-    public Header getResponseFooter(String footerName) {
+    @Override
+	public Header getResponseFooter(String footerName) {
         if (footerName == null) {
             return null;
         } else {
@@ -804,7 +836,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @return The status text.
      */
-    public String getStatusText() {
+    @Override
+	public String getStatusText() {
         return statusLine.getReasonPhrase();
     }
 
@@ -820,7 +853,9 @@ public abstract class HttpMethodBase implements HttpMethod {
      * @deprecated Use {@link org.apache.commons.httpclient.params.HttpParams#setParameter(String, Object)}
      * to exercise a more granular control over HTTP protocol strictness.
      */
-    public void setStrictMode(boolean strictMode) {
+    @Deprecated
+	@Override
+	public void setStrictMode(boolean strictMode) {
         if (strictMode) {
             this.params.makeStrict();
         } else {
@@ -834,7 +869,9 @@ public abstract class HttpMethodBase implements HttpMethod {
      *
      * @return <tt>false</tt>
      */
-    public boolean isStrictMode() {
+    @Deprecated
+	@Override
+	public boolean isStrictMode() {
         return false;
     }
 
@@ -845,7 +882,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * @param headerName the header's name
      * @param headerValue the header's value
      */
-    public void addRequestHeader(String headerName, String headerValue) {
+    @Override
+	public void addRequestHeader(String headerName, String headerValue) {
         addRequestHeader(new Header(headerName, headerValue));
     }
 
@@ -977,7 +1015,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * @throws IOException if an I/O (transport) error occurs
      * @throws HttpException  if a protocol exception occurs.
      */
-    public int execute(HttpState state, HttpConnection conn)
+    @Override
+	public int execute(HttpState state, HttpConnection conn)
         throws HttpException, IOException {
                 
         LOG.trace("enter HttpMethodBase.execute(HttpState, HttpConnection)");
@@ -1011,7 +1050,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @since 3.0
      */
-    public void abort() {
+    @Override
+	public void abort() {
         if (this.aborted) {
             return;
         }
@@ -1028,7 +1068,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @return <tt>true</tt> if the method has been executed, <tt>false</tt> otherwise
      */
-    public boolean hasBeenUsed() {
+    @Override
+	public boolean hasBeenUsed() {
         return used;
     }
 
@@ -1043,7 +1084,9 @@ public abstract class HttpMethodBase implements HttpMethod {
      * @deprecated no longer supported and will be removed in the future
      *             version of HttpClient
      */
-    public void recycle() {
+    @Deprecated
+	@Override
+	public void recycle() {
         LOG.trace("enter HttpMethodBase.recycle()");
 
         releaseConnection();
@@ -1077,7 +1120,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      *
      * @since 2.0
      */
-    public void releaseConnection() {
+    @Override
+	public void releaseConnection() {
         try {
             if (this.responseStream != null) {
                 try {
@@ -1097,7 +1141,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      *
      * @param headerName the header name
      */
-    public void removeRequestHeader(String headerName) {
+    @Override
+	public void removeRequestHeader(String headerName) {
         
         Header[] headers = getRequestHeaderGroup().getHeaders(headerName);
         for (int i = 0; i < headers.length; i++) {
@@ -1111,7 +1156,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @param header the header
      */
-    public void removeRequestHeader(final Header header) {
+    @Override
+	public void removeRequestHeader(final Header header) {
         if (header == null) {
             return;
         }
@@ -1125,7 +1171,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @return This implementation always returns <tt>true</tt>.
      */
-    public boolean validate() {
+    @Override
+	public boolean validate() {
         return true;
     }
 
@@ -1675,7 +1722,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * @throws HttpException  if a protocol exception occurs. Usually protocol exceptions 
      *                    cannot be recovered from.
      */
-    private InputStream readResponseBody(HttpConnection conn)
+    @SuppressWarnings("resource")
+	private InputStream readResponseBody(HttpConnection conn)
         throws HttpException, IOException {
 
         LOG.trace("enter HttpMethodBase.readResponseBody(HttpConnection)");
@@ -1753,7 +1801,8 @@ public abstract class HttpMethodBase implements HttpMethod {
             result = new AutoCloseInputStream(
                 result,
                 new ResponseConsumedWatcher() {
-                    public void responseConsumed() {
+                    @Override
+					public void responseConsumed() {
                         responseBodyConsumed();
                     }
                 }
@@ -2107,7 +2156,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      *
      * @since 3.0
      */
-    public HttpMethodParams getParams() {
+    @Override
+	public HttpMethodParams getParams() {
         return this.params;
     }
 
@@ -2118,7 +2168,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @see HttpMethodParams
      */
-    public void setParams(final HttpMethodParams params) {
+    @Override
+	public void setParams(final HttpMethodParams params) {
         if (params == null) {
             throw new IllegalArgumentException("Parameters may not be null");
         }
@@ -2167,7 +2218,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @deprecated use #getProxyAuthState()
      */
-    public String getProxyAuthenticationRealm() {
+    @Deprecated
+	public String getProxyAuthenticationRealm() {
         return this.proxyAuthState.getRealm();
     }
 
@@ -2179,7 +2231,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @deprecated use #getHostAuthState()
      */
-    public String getAuthenticationRealm() {
+    @Deprecated
+	public String getAuthenticationRealm() {
         return this.hostAuthState.getRealm();
     }
 
@@ -2242,7 +2295,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      *
      * @return The number of recoverable exceptions handled by the method.
      */
-    public int getRecoverableExceptionCount() {
+    @Deprecated
+	public int getRecoverableExceptionCount() {
         return recoverableExceptionCount;
     }
 
@@ -2308,7 +2362,9 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @deprecated no longer applicable
      */
-    public HostConfiguration getHostConfiguration() {
+    @Deprecated
+	@Override
+	public HostConfiguration getHostConfiguration() {
         HostConfiguration hostconfig = new HostConfiguration();
         hostconfig.setHost(this.httphost);
         return hostconfig;
@@ -2320,7 +2376,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @deprecated no longer applicable
      */
-    public void setHostConfiguration(final HostConfiguration hostconfig) {
+    @Deprecated
+	public void setHostConfiguration(final HostConfiguration hostconfig) {
         if (hostconfig != null) {
             this.httphost = new HttpHost(
                     hostconfig.getHost(),
@@ -2338,7 +2395,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @deprecated use {@link HttpMethodParams}
      */
-    public MethodRetryHandler getMethodRetryHandler() {
+    @Deprecated
+	public MethodRetryHandler getMethodRetryHandler() {
         return methodRetryHandler;
     }
 
@@ -2349,7 +2407,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @deprecated use {@link HttpMethodParams}
      */
-    public void setMethodRetryHandler(MethodRetryHandler handler) {
+    @Deprecated
+	public void setMethodRetryHandler(MethodRetryHandler handler) {
         methodRetryHandler = handler;
     }
 
@@ -2381,7 +2440,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @since 3.0
      */
-    public AuthState getHostAuthState() {
+    @Override
+	public AuthState getHostAuthState() {
         return this.hostAuthState;
     }
 
@@ -2392,7 +2452,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @since 3.0
      */
-    public AuthState getProxyAuthState() {
+    @Override
+	public AuthState getProxyAuthState() {
         return this.proxyAuthState;
     }
     
@@ -2416,7 +2477,8 @@ public abstract class HttpMethodBase implements HttpMethod {
      * 
      * @return <tt>true</tt> if the request has been sent, <tt>false</tt> otherwise
      */
-    public boolean isRequestSent() {
+    @Override
+	public boolean isRequestSent() {
         return this.requestSent;
     }
     
