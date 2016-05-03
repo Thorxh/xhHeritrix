@@ -423,7 +423,8 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
         alertThreadGroup = new AlertThreadGroup(getShortName());
         alertThreadGroup.addLogger(getJobLogger());
         Thread launcher = new Thread(alertThreadGroup, getShortName()+" launchthread") {
-            public void run() {
+            @Override
+			public void run() {
                 CrawlController cc = getCrawlController();
                 startContext();
                 if(cc!=null) {
@@ -478,7 +479,8 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
      * 
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(CrawlJob o) {
+    @Override
+	public int compareTo(CrawlJob o) {
         // prefer reverse-chronological ordering
         return -((Long)getLastActivityTime()).compareTo(o.getLastActivityTime());
     }
@@ -674,7 +676,8 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
      * 
      * @see org.springframework.context.ApplicationListener#onApplicationEvent(org.springframework.context.ApplicationEvent)
      */
-    public void onApplicationEvent(ApplicationEvent event) {
+    @Override
+	public void onApplicationEvent(ApplicationEvent event) {
         if(event instanceof CrawlStateEvent) {
             getJobLogger().log(Level.INFO, ((CrawlStateEvent)event).getState() + 
                     (ac.getCurrentLaunchId() != null ? " " + ac.getCurrentLaunchId() : ""));
