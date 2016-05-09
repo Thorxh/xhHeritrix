@@ -136,13 +136,15 @@ public class Engine {
         if(dir==null) {
             return false; 
         }
+        // candidate 候选人
         File[] candidateConfigs = dir.listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
+            @Override
+			public boolean accept(File dir, String name) {
                 return name.endsWith(".cxml");
             }});
         if(candidateConfigs==null || candidateConfigs.length == 0) {
             // no CXML file found!
-            return false; 
+            return false;
         }
         if(jobConfigs.containsKey(dir.getName())) {
             // same-name job already exists
@@ -152,6 +154,7 @@ public class Engine {
             try {
                 CrawlJob cj = new CrawlJob(cxml);            
                 if(!cj.getJobDir().getParentFile().equals(getJobsDir())) {
+                	// 为何还要添加，不是已经存在了吗?
                     writeJobPathFile(cj);
                 }
                 jobConfigs.put(cj.getShortName(),cj);

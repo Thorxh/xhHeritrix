@@ -73,7 +73,8 @@ implements Serializable,
     
     // ApplicationContextAware implementation, for eventing
     protected AbstractApplicationContext appCtx;
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.appCtx = (AbstractApplicationContext)applicationContext;
     }
     
@@ -185,6 +186,7 @@ implements Serializable,
     public int getMaxToeThreads() {
         return maxToeThreads;
     }
+    // 默认 25 个线程
     @Value("25")
     public void setMaxToeThreads(int maxToeThreads) {
         this.maxToeThreads = maxToeThreads;
@@ -264,6 +266,7 @@ implements Serializable,
      */
     private transient CrawlStatus sExit = CrawlStatus.CREATED;
 
+    // NASCENT 新生的
     public static enum State {
         NASCENT, RUNNING, EMPTY, PAUSED, PAUSING, 
         STOPPING, FINISHED, PREPARING 
@@ -276,7 +279,8 @@ implements Serializable,
     
     transient protected AlertThreadGroup alertThreadGroup;
     
-    public void start() {
+    @Override
+	public void start() {
         // cache AlertThreadGroup for later ToePool launch
         AlertThreadGroup atg = AlertThreadGroup.current();
         if(atg!=null) {
@@ -301,11 +305,13 @@ implements Serializable,
     }
     
     protected boolean isRunning = false; 
-    public boolean isRunning() {
+	@Override
+	public boolean isRunning() {
         return isRunning; 
     }
 
-    public void stop() {
+	@Override
+	public void stop() {
         // TODO: more stop/cleanup?
         isRunning = false; 
     }
@@ -518,7 +524,7 @@ implements Serializable,
             return;
         }
         
-        assert toePool != null;
+//        assert toePool != null;
         
         Frontier f = getFrontier();
         f.unpause();
@@ -670,11 +676,15 @@ implements Serializable,
     // Checkpointable
     // CrawlController's only interest is in knowing that a Checkpoint is
     // being recovered
-    public void startCheckpoint(Checkpoint checkpointInProgress) {}
-    public void doCheckpoint(Checkpoint checkpointInProgress) throws IOException {}
-    public void finishCheckpoint(Checkpoint checkpointInProgress) {}
+    @Override
+	public void startCheckpoint(Checkpoint checkpointInProgress) {}
+    @Override
+	public void doCheckpoint(Checkpoint checkpointInProgress) throws IOException {}
+    @Override
+	public void finishCheckpoint(Checkpoint checkpointInProgress) {}
     protected Checkpoint recoveryCheckpoint;
-    public void setRecoveryCheckpoint(Checkpoint recoveryCheckpoint) {
+    @Override
+	public void setRecoveryCheckpoint(Checkpoint recoveryCheckpoint) {
         this.recoveryCheckpoint = recoveryCheckpoint;
     }
     

@@ -88,6 +88,7 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
     protected File primaryConfig; 
     protected PathSharingContext ac; 
     protected int launchCount; 
+    // Partial 不完整, 是否加载部分
     protected boolean isLaunchInfoPartial;
     protected DateTime lastLaunch;
     protected AlertThreadGroup alertThreadGroup;
@@ -95,6 +96,8 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
     protected DateTime xmlOkAt = new DateTime(0L);
     protected Logger jobLogger;
     
+    // 初始化成员变量File primaryConfig 是任务配置文件crawler-beans.cxml，boolean isLaunchInfoPartial是否加载部分，
+    // scanJobLog()扫描日志，AlertThreadGroup alertThreadGroup线程组（本身用于发布日志记录）
     public CrawlJob(File cxml) {
         primaryConfig = cxml; 
         isLaunchInfoPartial = false;
@@ -161,8 +164,12 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
         if(!jobLog.exists()) return;
         
         try {
+        	// \s 空白字符：[ \t\n\x0B\f\r] 
+        	// \S 非空白字符：[^\s] 
+
             Pattern launchLine = Pattern.compile("(\\S+) (\\S+) Job launched");
             long startPosition = 0; 
+            // ???
             if (jobLog.length() > FileUtils.ONE_KB * 100) {
                 isLaunchInfoPartial = true;
                 startPosition = jobLog.length()-(FileUtils.ONE_KB * 100);
@@ -176,6 +183,7 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
                 Matcher m = launchLine.matcher(line);
                 if (m.matches()) {
                     launchCount++;
+                    // ??? m.group(1)
                     lastLaunch = new DateTime(m.group(1));
                 }
             }
@@ -559,7 +567,7 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
             }
         }
         
-        assert needTeardown == (ac != null);
+        // assert needTeardown == (ac != null);
         return !needTeardown; 
     }
 
@@ -643,7 +651,7 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
         }
         ConfigPathConfigurer cpc = 
             (ConfigPathConfigurer)ac.getBean("configPathConfigurer");
-        return cpc.getAllConfigPaths();        
+        return cpc.getAllConfigPaths(); 
     }
 
     /**
