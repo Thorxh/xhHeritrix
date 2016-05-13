@@ -43,7 +43,7 @@ passed objects fate.</p>
   <li>REJECT means the object is ruled-out for further processing</li>
   <li>PASS means this particular DecideRule has no opinion</li>
 </ul>
-</p>
+
 
 <p>As previously outlined, each DecideRule is applied in turn;
 the last one to express a non-PASS preference wins.</p>
@@ -58,7 +58,7 @@ the last one to express a non-PASS preference wins.</p>
 </ul>
 Then, you have a crawl that will go 3 hops (of any type)
 from the seeds, with a special affordance to get prerequisites
- of 3-hop items (which may be 4 "hops" out)</p>
+ of 3-hop items (which may be 4 "hops" out)
    
 <p>To allow this style of decision processing to be plugged into the
    existing Filter and Scope slots:
@@ -66,7 +66,6 @@ from the seeds, with a special affordance to get prerequisites
      DecideRules</li>
 <li>There's a DecidingScope which takes the same</li>
 </ul>
-</p>
 
 <p>See <a href="http://crawler.archive.org/cgi-bin/wiki.pl?NewScopingModel">NewScopingModel</a>
 for background.</p>
