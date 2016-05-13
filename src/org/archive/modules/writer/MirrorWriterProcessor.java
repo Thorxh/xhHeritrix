@@ -193,6 +193,7 @@ public class MirrorWriterProcessor extends Processor {
     
     /**
      * Implicitly append this to a URI ending with '/'.
+     * Implicitly 暗中
      */
     protected String directoryFile = "index.html";
     public String getDirectoryFile() {
@@ -220,6 +221,7 @@ public class MirrorWriterProcessor extends Processor {
      * pair. This can be used for consistency when several names are used for
      * one host, for example [12.34.56.78 www42.foo.com].
      */
+    // 为什么使用 List 而不是 Map
     protected List<String> hostMap = new ArrayList<String>(); 
     public List<String> getHostMap() {
         return this.hostMap;
@@ -467,6 +469,7 @@ public class MirrorWriterProcessor extends Processor {
         String host = null;
         boolean hd = getCreateHostDirectory();
         if (hd) {
+        	// 将 ip 映射到网址
             host = uuri.getHost();
             List<String> hostMap = getHostMap();
             if ((null != hostMap) && (hostMap.size() > 1)) {
@@ -487,6 +490,7 @@ public class MirrorWriterProcessor extends Processor {
 
         int port = getCreatePortDirectory() ? uuri.getPort() : -1;
 
+        // 将特定内容保存为特定后缀文件
         String suffix = null; // Replacement suffix.
         List<String> ctm = getContentTypeMap();
         if ((null != ctm) && (ctm.size() > 1)) {
@@ -494,8 +498,8 @@ public class MirrorWriterProcessor extends Processor {
             String contentType = curi.getContentType().toLowerCase();
             Iterator<String> i = ctm.iterator();
             for (boolean more = true; more && i.hasNext();) {
-                String ct = (String) i.next();
-                String suf = (String) i.next();
+                String ct = i.next();
+                String suf = i.next();
                 if ((null != ct) && contentType.startsWith(ct.toLowerCase())) {
                     more = false;
                     if ((null != suf) && (0 != suf.length())) {
@@ -516,14 +520,15 @@ public class MirrorWriterProcessor extends Processor {
         }
 
         Map<String,String> characterMap = Collections.emptyMap();
+        // 替换某些字符
         List<String> cm = getCharacterMap();
         if ((null != cm) && (cm.size() > 1)) {
             ensurePairs(cm);
             characterMap = new HashMap<String,String>(cm.size()); 
             // Above will be half full.
             for (Iterator<String> i = cm.iterator(); i.hasNext();) {
-                String s1 = (String) i.next();
-                String s2 = (String) i.next();
+                String s1 = i.next();
+                String s2 = i.next();
                 if ((null != s1) && (1 == s1.length()) && (null != s2)
                         && (0 != s2.length())) {
                     characterMap.put(s1, s2);
@@ -872,7 +877,8 @@ public class MirrorWriterProcessor extends Processor {
                 this.target = target;
             }
 
-            public boolean accept(File dir, String name) {
+            @Override
+			public boolean accept(File dir, String name) {
                 return target.equalsIgnoreCase(name);
             }
         }
@@ -940,7 +946,8 @@ public class MirrorWriterProcessor extends Processor {
             this.underscoreSet = underscoreSet;
         }
 
-        void addToPath(URIToFileReturn currentPath) throws IOException {
+        @Override
+		void addToPath(URIToFileReturn currentPath) throws IOException {
             NumberFormat nf = null;
             int startLen = mainPart.length(); // Starting length.
             for (int i = 0; ; ++i) {
@@ -1137,7 +1144,8 @@ public class MirrorWriterProcessor extends Processor {
             this.suffixAtEnd = suffixAtEnd;
         }
 
-        void addToPath(URIToFileReturn currentPath) {
+        @Override
+		void addToPath(URIToFileReturn currentPath) {
             File fsf = currentPath.getFile();
             NumberFormat nf = null;
             dirPathLen = 1 + fsf.getPath().length();
@@ -1426,7 +1434,7 @@ public class MirrorWriterProcessor extends Processor {
                 if (".".equals(s) && (i == beginIndex) && (null != dotBegin)) {
                     lump = dotBegin;
                 } else {
-                    lump = (String) characterMap.get(s);
+                    lump = characterMap.get(s);
                 }
                 if (null == lump) {
                     if ("%".equals(s) && ((endIndex - i) > 2)
@@ -1453,7 +1461,8 @@ public class MirrorWriterProcessor extends Processor {
            Converts this LumpyString to a String.
            @return the current string contents
         */
-        public String toString() {
+        @Override
+		public String toString() {
             assert checkInvariants();
             return string.toString();
         }
@@ -1614,10 +1623,10 @@ public class MirrorWriterProcessor extends Processor {
        a path relative to the base directory.
     */
     class URIToFileReturn {
-        /** The file system path as a File.*/
+        /** The file system path as a File. 完整路径名*/
         private File filePath;
 
-        /** The relative path from baseDir.*/
+        /** The relative path from baseDir. 相对路径名*/
         private StringBuffer relativePath = new StringBuffer(255);
 
         /**

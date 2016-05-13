@@ -73,7 +73,8 @@ public class DispositionProcessor extends Processor {
      * same server.
      */
     {
-        setDelayFactor(5.0f);
+//        setDelayFactor(5.0f);
+        setDelayFactor(0.0f);
     }
     public float getDelayFactor() {
         return (Float) kp.get("delayFactor");
@@ -87,7 +88,8 @@ public class DispositionProcessor extends Processor {
      * server, regardless of multiple
      */
     {
-        setMinDelayMs(3000);
+//        setMinDelayMs(3000);
+        setMinDelayMs(0);
     }
     public int getMinDelayMs() {
         return (Integer) kp.get("minDelayMs");
@@ -112,7 +114,8 @@ public class DispositionProcessor extends Processor {
 
     /** never wait more than this long, regardless of multiple */
     {
-        setMaxDelayMs(30000);
+//        setMaxDelayMs(30000);
+        setMaxDelayMs(0);
     }
     public int getMaxDelayMs() {
         return (Integer) kp.get("maxDelayMs");
@@ -172,7 +175,7 @@ public class DispositionProcessor extends Processor {
     
     @Override
     protected void innerProcess(CrawlURI puri) {
-        CrawlURI curi = (CrawlURI)puri;
+        CrawlURI curi = puri;
         
         // Tally per-server, per-host, per-frontier-class running totals
         CrawlServer server = serverCache.getServerFor(curi.getUURI());
