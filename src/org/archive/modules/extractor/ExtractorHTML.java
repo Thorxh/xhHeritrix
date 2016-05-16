@@ -350,7 +350,8 @@ public class ExtractorHTML extends ContentExtractor implements InitializingBean 
     public ExtractorHTML() {
     }
 
-    public void afterPropertiesSet() {
+    @Override
+	public void afterPropertiesSet() {
         String regex = RELEVANT_TAG_EXTRACTOR;
         regex = regex.replace(MAX_ELEMENT_REPLACE, 
                     Integer.toString(getMaxElementLength()));
@@ -400,8 +401,6 @@ public class ExtractorHTML extends ContentExtractor implements InitializingBean 
                 (attr.start(14) > -1) ? 14 : (attr.start(15) > -1) ? 15 : 16;
             int start = attr.start(valueGroup);
             int end = attr.end(valueGroup);
-            assert start >= 0: "Start is: " + start + ", " + curi;
-            assert end >= 0: "End is :" + end + ", " + curi;
             CharSequence value = cs.subSequence(start, end);
             CharSequence attrName = cs.subSequence(attr.start(1),attr.end(1));
             value = TextUtils.unescapeHtml(value);
@@ -681,7 +680,8 @@ public class ExtractorHTML extends ContentExtractor implements InitializingBean 
     }
 
     
-    protected boolean shouldExtract(CrawlURI uri) {
+    @Override
+	protected boolean shouldExtract(CrawlURI uri) {
         if (getIgnoreUnexpectedHtml()) {
             try {
                 // HTML was not expected (eg a GIF was expected) so ignore
@@ -704,7 +704,8 @@ public class ExtractorHTML extends ContentExtractor implements InitializingBean 
     }
     
     
-    public boolean innerExtract(CrawlURI curi) {
+    @Override
+	public boolean innerExtract(CrawlURI curi) {
         if (!curi.containsContentTypeCharsetDeclaration()) {
             String contentPrefix = curi.getRecorder().getContentReplayPrefixString(1000);
             Charset contentDeclaredEncoding = getContentDeclaredCharset(curi,contentPrefix);
@@ -804,8 +805,6 @@ public class ExtractorHTML extends ContentExtractor implements InitializingBean 
                 // <meta> match
                 int start = tags.start(5);
                 int end = tags.end(5);
-                assert start >= 0: "Start is: " + start + ", " + curi;
-                assert end >= 0: "End is :" + end + ", " + curi;
                 if (processMeta(curi,
                     cs.subSequence(start, end))) {
 
@@ -816,12 +815,8 @@ public class ExtractorHTML extends ContentExtractor implements InitializingBean 
                 // generic <whatever> match
                 int start5 = tags.start(5);
                 int end5 = tags.end(5);
-                assert start5 >= 0: "Start is: " + start5 + ", " + curi;
-                assert end5 >= 0: "End is :" + end5 + ", " + curi;
                 int start6 = tags.start(6);
                 int end6 = tags.end(6);
-                assert start6 >= 0: "Start is: " + start6 + ", " + curi;
-                assert end6 >= 0: "End is :" + end6 + ", " + curi;
                 String element = cs.subSequence(start6, end6).toString();
                 CharSequence attributes = cs.subSequence(start5, end5);
                 processGeneralTag(curi,
@@ -829,18 +824,12 @@ public class ExtractorHTML extends ContentExtractor implements InitializingBean 
                     attributes);
                 // remember FORM to help later extra processing
                 if ("form".equalsIgnoreCase(element)) {
-                    curi.getDataList(A_FORM_OFFSETS).add((Integer)(start6-1));
+                    curi.getDataList(A_FORM_OFFSETS).add(start6-1);
                 }
-               
-
             } else if (tags.start(1) > 0) {
                 // <script> match
                 int start = tags.start(1);
                 int end = tags.end(1);
-                assert start >= 0: "Start is: " + start + ", " + curi;
-                assert end >= 0: "End is :" + end + ", " + curi;
-                assert tags.end(2) >= 0: "Tags.end(2) illegal " + tags.end(2) +
-                    ", " + curi;
                 processScript(curi, cs.subSequence(start, end),
                     tags.end(2) - start);
 
@@ -848,10 +837,6 @@ public class ExtractorHTML extends ContentExtractor implements InitializingBean 
                 // <style... match
                 int start = tags.start(3);
                 int end = tags.end(3);
-                assert start >= 0: "Start is: " + start + ", " + curi;
-                assert end >= 0: "End is :" + end + ", " + curi;
-                assert tags.end(4) >= 0: "Tags.end(4) illegal " + tags.end(4) +
-                    ", " + curi;
                 processStyle(curi, cs.subSequence(start, end),
                     tags.end(4) - start);
             }
