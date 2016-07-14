@@ -63,6 +63,14 @@ implements UserAgentProvider,
     public String getRobotsPolicyName() {
         return (String) kp.get("robotsPolicyName");
     }
+    
+    /**
+     * 在默认情况下使用 @Autowired 注释进行自动注入时，Spring 容器中匹配的
+     * 候选 Bean 数目必须有且仅有一个。当找不到一个匹配的 Bean 时，Spring 容
+     * 器将抛出BeanCreationException 异常，并指出必须至少拥有一个匹配的 Bean。
+     * @Autowired(required = false)，这等于告诉 Spring：在找不到匹配 Bean 时也不报异常
+     * 
+     */
     @Autowired(required=false)
     public void setRobotsPolicyName(String policy) {
         kp.put("robotsPolicyName",policy);

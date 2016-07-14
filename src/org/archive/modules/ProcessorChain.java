@@ -31,7 +31,8 @@ implements Iterable<Processor>,
            Lifecycle {
     
     protected KeyedProperties kp = new KeyedProperties();
-    public KeyedProperties getKeyedProperties() {
+    @Override
+	public KeyedProperties getKeyedProperties() {
         return kp;
     }
     
@@ -39,7 +40,8 @@ implements Iterable<Processor>,
         return getProcessors().size();
     }
 
-    public Iterator<Processor> iterator() {
+    @Override
+	public Iterator<Processor> iterator() {
         return getProcessors().iterator();
     }
 
@@ -52,11 +54,13 @@ implements Iterable<Processor>,
     }
 
     protected boolean isRunning = false; 
-    public boolean isRunning() {
+    @Override
+	public boolean isRunning() {
         return isRunning;
     }
 
-    public void start() {
+    @Override
+	public void start() {
         for(Processor p : getProcessors()) {
             // relies on each Processor's start() being ok to call if 
             // already running, which is part of the Lifecycle contract
@@ -65,7 +69,8 @@ implements Iterable<Processor>,
         isRunning = true; 
     }
 
-    public void stop() {
+    @Override
+	public void stop() {
         for(Processor p : getProcessors()) {
             // relies on each Processor's stop() being ok to call if 
             // not running, which is part of the Lifecycle contract
@@ -79,7 +84,8 @@ implements Iterable<Processor>,
      * @param writer Where to write to.
      * @see org.archive.crawler.framework.Processor#report()
      */
-    public void reportTo(PrintWriter writer) {
+    @Override
+	public void reportTo(PrintWriter writer) {
         writer.print(
             getClass().getSimpleName() + " - Processors report - "
                 + ArchiveUtils.get12DigitDate()
@@ -94,18 +100,21 @@ implements Iterable<Processor>,
         writer.println();
     }
 
-    public String shortReportLegend() {
+    @Override
+	public String shortReportLegend() {
         return "";
     }
 
-    public Map<String, Object> shortReportMap() {
+    @Override
+	public Map<String, Object> shortReportMap() {
         Map<String,Object> data = new LinkedHashMap<String, Object>();
         data.put("processorCount", size());
         data.put("processors", getProcessors());
         return data;
     }
 
-    public void shortReportLineTo(PrintWriter pw) {
+    @Override
+	public void shortReportLineTo(PrintWriter pw) {
         pw.print(size());
         pw.print(" processors: ");
         for(Processor p : this) {
@@ -115,7 +124,6 @@ implements Iterable<Processor>,
     }
 
     public void process(CrawlURI curi, ChainStatusReceiver thread) throws InterruptedException {
-        assert KeyedProperties.overridesActiveFrom(curi);
         String skipToProc = null; 
         
         ploop: for(Processor curProc : this ) {

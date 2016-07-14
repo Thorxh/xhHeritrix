@@ -205,7 +205,8 @@ public class Link implements Serializable, Comparable<Link> {
         }
     }
 
-    public int compareTo(Link o) {
+    @Override
+	public int compareTo(Link o) {
         int cmp = source.toString().compareTo(o.source.toString());
         if (cmp==0) {
             cmp = destination.toString().compareTo(o.destination.toString());

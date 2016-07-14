@@ -46,6 +46,6 @@ public class ConfigString implements ReadSource {
     public ConfigString() {
     }
     public ConfigString(String value) {
-        setValue(value); 
+        setValue(value);
     }
 }

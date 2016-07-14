@@ -30,33 +30,48 @@ package org.archive.modules.extractor;
  */
 public enum Hop {
 
-    /** Navigation links, like A/@HREF. */
+    /**
+     * 一般的<a>链接 
+     * Navigation links, like A/@HREF. 
+     * */
     NAVLINK('L'),
     
-    /** Implied prerequisite links, like dns or robots. */
+    /** 
+     * 隐含的必要的链接
+     * Implied prerequisite links, like dns or robots. 
+     * */
     PREREQ('P'),
     
-    /** Embedded links necessary to render the page, like IMG/@SRC. */
+    /**
+     * 内嵌的必要的用来渲染页面的链接，比如图片链接 
+     * Embedded links necessary to render the page, like IMG/@SRC. 
+     * */
     EMBED('E'),
     
     /** 
+     * 内嵌在JavaScript中的链接
      * Speculative/aggressively extracted links, perhaps embed or nav, 
      * as in javascript.  
      */
     SPECULATIVE('X'),
     
     /** 
-     * Referral/redirect links, like header 'Location:' on a 301/302 response. 
-     */
+     * 重定向链接
+     * Referral/redirect links, like header 'Location:' on a 301/302 response.
+     * */
     REFER('R'),
 
     /** 
+     * 隐藏的链接，根据规则推断的
      * Inferred/implied links -- not necessarily literally in the source 
      * material, but deduced by convention.
-     */
+     * */
     INFERRED('I'),
     
-    /** Synthesized form-submit */ 
+    /** 
+     * form表单提交链接
+     * Synthesized form-submit 
+     * */ 
     SUBMIT('S');
     
     /** The hop character for logs. */

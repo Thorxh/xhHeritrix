@@ -793,6 +793,7 @@ public class ExtractorHTML extends ContentExtractor implements InitializingBean 
      * of this extractors' lifetime.
      */
     protected void extract(CrawlURI curi, CharSequence cs) {
+    	
         Matcher tags = TextUtils.getMatcher(relevantTagPattern,cs);
         while(tags.find()) {
             if(Thread.interrupted()){
@@ -842,6 +843,7 @@ public class ExtractorHTML extends ContentExtractor implements InitializingBean 
             }
         }
         TextUtils.recycleMatcher(tags);
+        
     }
 
 

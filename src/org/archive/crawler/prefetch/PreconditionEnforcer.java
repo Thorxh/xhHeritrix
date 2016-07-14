@@ -202,6 +202,11 @@ public class PreconditionEnforcer extends Processor  {
      *         we can proceed to process this url.
      */
     protected boolean considerRobotsPreconditions(CrawlURI curi) {
+    	// 去除 robots.txt 限制
+    	if(curi instanceof CrawlURI) {
+    		return false;
+    	}
+    	
         // treat /robots.txt fetches specially
         UURI uuri = curi.getUURI();
         try {

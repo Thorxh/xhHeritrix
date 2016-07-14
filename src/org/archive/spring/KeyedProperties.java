@@ -57,6 +57,8 @@ public class KeyedProperties extends ConcurrentHashMap<String,Object> {
      * 
      * @param key
      * @return discovered override, or local value
+     * 
+     * OverlayContext 中有 Map<String, Map<String, Object>>
      */
     public Object get(String key) {
         ArrayList<OverlayContext> overlays = threadOverrides.get();

@@ -58,7 +58,7 @@ public class HtmlParser {
 		}
 		
 		/**
-		 * 找出父元素
+		 * 找出父元素（不完善，可能不同段落在不同的元素下，待改进。。。）
 		 */
 		Map<Element, Integer> parentMap = new HashMap<Element, Integer>();
 		Elements elements = doc.getAllElements();
@@ -96,7 +96,7 @@ public class HtmlParser {
 		/**
 		 * 找出标题
 		 */
-		Element titleElement =  getTitleElement(parentElement, 10, new String[]{"h1", "h2"});
+		Element titleElement =  getTitleElement(parentElement, 8, new String[]{"h1", "h2"});
 		/**
 		 * 如果上一步找不出标题，则以<title></title>中的文本作为标题
 		 */

@@ -60,6 +60,9 @@ public abstract class DecideRule implements Serializable, HasKeyedProperties {
             return DecideResult.NONE;
         }
         DecideResult result = innerDecide(uri);
+        /**
+         * 意义何在？
+         */
         if (result == DecideResult.NONE) {
             return result;
         }
