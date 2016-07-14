@@ -36,6 +36,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Validator;
 
 /**
+ * 爬虫的基本信息
+ * 
  * Basic crawl metadata, as consulted by functional modules and
  * recorded in ARCs/WARCs.
  * 
