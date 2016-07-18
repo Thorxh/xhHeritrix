@@ -37,9 +37,12 @@ import org.archive.util.ArchiveUtils;
 /**
  * Implementation for Engine.  Jobs and profiles are stored in a 
  * directory called the jobsDir.  The jobs are contained as subdirectories of
- * jobDir. <br> 
+ * jobDir. 
  * 
- * 作用：管理爬虫目录：新建，复制，删除以及扫描爬虫目录；停止爬虫任务 <br>
+ * <br><br>
+ * 
+ * 作用：管理爬虫目录：新建，复制，删除以及扫描爬虫目录；停止爬虫任务；汇报运行状态
+ * 
  * 
  * @contributor pjack
  * @contributor gojomo
@@ -84,6 +87,8 @@ public class Engine {
      * Find all job configurations in the usual place -- subdirectories
      * of the jobs directory with files ending '.cxml', and from jobPathFiles
      * (previously added by user) found in the jobs directory
+     * <br><br>
+     * 查找所有该目录和其子目录下的配置文件及jobPathFiles文件，并加入到jobConfigs中
      */
     public void findJobConfigs() {
         // TODO: allow other places/paths to be scanned/added as well?
@@ -135,6 +140,7 @@ public class Engine {
 
     /**
      * Adds a job directory to the Engine known jobConfigs if not extant.
+     * <br>
      * 添加爬虫目录到engine的jobConfigs中
      * 
      * @param dir directory to be added
@@ -187,6 +193,9 @@ public class Engine {
     /**
      * Copy a job to a new location, possibly making a job
      * a profile or a profile a runnable job. 
+     * 
+     * <br>
+     * 复制作业
      * 
      * @param orig CrawlJob representing source
      * @param destDir File location destination
@@ -241,7 +250,8 @@ public class Engine {
     /**
      * Copy a job to a new location, possibly making a job
      * a profile or a profile a runnable job. 
-     * 
+     * <br>
+     * 复制作业
      * @param cj CrawlJob representing source
      * @param copyTo String location destination; interpreted relative to jobsDir
      * @param asProfile true if destination should become a profile
@@ -357,6 +367,11 @@ public class Engine {
     
     /**
      * create a new job dir and copy profile CXML into as non-profile CXML
+     * 
+     * <br><br>
+     * 
+     * 创建新的工作目录并将默认的配置文件复制到目录中
+     * 
      * @param newJobDir new job directory
      * @throws IOException 
      */

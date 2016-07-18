@@ -45,7 +45,7 @@ import org.springframework.beans.factory.annotation.Required;
 
 /**
  * A filesystem path, as a bean, for the convenience of configuration
- * via srping beans.xml or user interfaces to same. 
+ * via spring beans.xml or user interfaces to same. 
  * 
  * Adds an optional relative-to base path and symbolic handle. 
  * 

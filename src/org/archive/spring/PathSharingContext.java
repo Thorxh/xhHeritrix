@@ -59,6 +59,10 @@ import org.springframework.validation.Validator;
  * {@link ConfigPathConfigurer}) so that launch-specific paths can be used for
  * logs, reports, warcs, etc.
  * 
+ * <br> <br>
+ * 
+ * 使用时间戳生成启动ID，创建启动目录{jobDir}/{launchId}，并将配置文件复制到启动目录中(并没有发现复制其他配置文件的代码)
+ * 
  * @contributor gojomo
  */
 public class PathSharingContext extends FileSystemXmlApplicationContext {
@@ -89,6 +93,9 @@ public class PathSharingContext extends FileSystemXmlApplicationContext {
     // Cascading self-validation
     //
     protected HashMap<String,Errors> allErrors; // bean name -> Errors
+    /**
+     * 检查参数配置是否有错，并将错误信息存储在 allErrors 中
+     */
     public void validate() {
         allErrors = new HashMap<String,Errors>();
             
@@ -109,6 +116,9 @@ public class PathSharingContext extends FileSystemXmlApplicationContext {
         }
     }
 
+    /**
+     * 初始化启动目录，复制配置文件到目录中
+     */
     @Override
     public void start() {
         initLaunchDir();
@@ -147,6 +157,9 @@ public class PathSharingContext extends FileSystemXmlApplicationContext {
         }
     }
     
+    /**
+     * 初始化启动目录，复制配置文件到目录中
+     */
     protected void initLaunchDir() {
         initLaunchId();
         try {

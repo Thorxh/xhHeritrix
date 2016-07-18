@@ -368,8 +368,7 @@ implements Serializable,
         this.sExit = CrawlStatus.FINISHED_ABNORMAL;
         
         if (getPauseAtStart()) {
-            // frontier is already paused unless started, so just 
-            // 'complete'/ack pause
+            // frontier is already paused unless started, so just 'complete'/ack pause
             completePause();
         } else {
             getFrontier().run();

@@ -122,7 +122,12 @@ public class Heritrix {
         out.println("Your arguments were: "+StringUtils.join(args, ' '));
     }
     
-    
+    /**<ol>
+     *  <li>-a admin:admin //用户登陆</li>
+     *  <li>-j F:/CrawledData //设置路径</li>
+     * </ol>
+     * @return
+     */
     private static Options options() {
         Options options = new Options();
         options.addOption("h", "help", true, "Usage information." );

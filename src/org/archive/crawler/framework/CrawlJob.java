@@ -156,10 +156,11 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
         return launchCount;
     }
     /**
-     * 统计已启动次数
+     * Refresh knowledge of total launched and last launch by scanning the job.log. 
      * 
-     * Refresh knowledge of total launched and last launch by scanning
-     * the job.log. 
+     * <br><br>
+     * 
+     * 统计已启动次数
      */
     protected void scanJobLog() {
         File jobLog = getJobLog();
@@ -244,7 +245,7 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
     /**
      * Is the primary XML config minimally well-formed? 
      * 
-     * 判断xml配置文件是否完整
+     * 检查xml配置文件是否完整
      */
     public void checkXML() {
         // TODO: suppress check if XML unchanged? job.log when XML changed? 
@@ -297,9 +298,11 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
     
     
     /**
-     * Can the configuration yield an assembled ApplicationContext? <br> 
+     * Can the configuration yield an assembled ApplicationContext?  
      * 
-     * 初始化上下文(创建PathSharingContext)
+     * <br><br>
+     * 
+     * 初始化上下文(创建PathSharingContext) (在build时被调用)
      */
     public synchronized void instantiateContainer() {
         checkXML(); 
@@ -371,9 +374,11 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
     
     /**
      * Does the assembled ApplicationContext self-validate? Any failures
-     * are reported as WARNING log events in the job log. <br>
+     * are reported as WARNING log events in the job log. 
      * 
-     * 初始化容器，验证配置是否正确，失败的地方被记录在job log中<br>
+     * <br><br>
+     * 
+     * 初始化容器，验证配置是否正确，失败的地方被记录在job log中
      * 
      * TODO: make these severe? 
      */
@@ -396,7 +401,9 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
      * Did the ApplicationContext self-validate? 
      * return true if validation passed without errors
      * 
-     * 获取验证配置结果，返回true or false
+     * <br><br>
+     * 
+     * 获取配置文件的验证结果，返回true or false
      * 
      */
     public synchronized boolean hasValidApplicationContext() {
@@ -414,11 +421,11 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
     
     /**
      * Launch a crawl into 'running' status, assembling if necessary. 
+     * (Note the crawl may have been configured to start in a 'paused' state.) 
      * 
-     * 启动爬虫任务
+     * <br><br>
      * 
-     * (Note the crawl may have been configured to start in a 'paused'
-     * state.) 
+     * 启动爬虫任务(在launch时被调用)
      */
     public synchronized void launch() {
         if (isProfile()) {
@@ -477,11 +484,10 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
     /**
      * Start the context, catching and reporting any BeansExceptions.
      * 
-     * 启动context， 记录日志
+     * 启动context， 配置相应的Logger
      */
     protected synchronized void startContext() {
         try {
-        	// 创建了目录，生成了默认配置文件及其他的一些工作
             ac.start(); 
             
             // job log file covering just this launch
@@ -562,9 +568,13 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
     }
     /**
      * Ensure a fresh start for any configuration changes or relaunches,
-     * by stopping and discarding an existing ApplicationContext. <br>
+     * by stopping and discarding an existing ApplicationContext. 
      * 
-     * 保证配置改变或者重新启动时已存在的ApplicationContext停止，放弃最后释放 <br>
+     * <br><br>
+     * 
+     * 停止任务<br>
+     * 
+     * 保证配置改变或者任务重新启动时已存在的ApplicationContext停止、放弃、释放
      * 
      * @return true if teardown is complete when method returns, false if still in progress
      */
@@ -596,9 +606,11 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
     }
 
     /**
-     *  ac guaranteed to be null after this method is called <br>
+     *  ac guaranteed to be null after this method is called 
      *  
-     *  释放相关资源，记录日志 <br>
+     *  <br><br>
+     *  
+     *  释放相关资源，记录日志 
      */
     protected synchronized void doTeardown() {
         needTeardown = false;
@@ -643,9 +655,11 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
 
     /**
      * Return all config files included via 'import' statements in the
-     * primary config (or other included configs). <br>
+     * primary config (or other included configs). 
      * 
-     * 返回配置文件中import的配置文件，包括import的配置文件中的import的配置文件
+     * <br><br>
+     * 
+     * 获取import的配置文件，包括import的配置文件中的import的配置文件
      * 
      * @param xml File to examine
      * @return List<File> of all transitively-imported Files
@@ -738,6 +752,8 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
 
     /**
      * Is it reasonable to offer a launch button
+     * 
+     * <br><br>
      * 
      * 是否具备可以launch的条件
      * 
