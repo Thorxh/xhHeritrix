@@ -271,6 +271,7 @@ public class Heritrix {
 "You must specify a valid [username:]password for the web interface using -a."
             );
             System.exit(1);
+            // 程序退出了，还有什么意义??
             authPassword = ""; // suppresses uninitialized warning
         }
         

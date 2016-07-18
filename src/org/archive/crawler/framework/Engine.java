@@ -37,7 +37,9 @@ import org.archive.util.ArchiveUtils;
 /**
  * Implementation for Engine.  Jobs and profiles are stored in a 
  * directory called the jobsDir.  The jobs are contained as subdirectories of
- * jobDir.  
+ * jobDir. <br> 
+ * 
+ * 作用：管理爬虫目录：新建，复制，删除以及扫描爬虫目录；停止爬虫任务 <br>
  * 
  * @contributor pjack
  * @contributor gojomo
@@ -60,6 +62,11 @@ public class Engine {
     protected String profileCxmlPath = 
         "/org/archive/crawler/restlet/profile-crawler-beans.cxml";
     
+    /**
+     * 使用给定目录创建engine，该目录作为工作目录
+     * 
+     * @param jobsDir
+     */
     public Engine(File jobsDir) {
         this.jobsDir = jobsDir;
         
@@ -128,6 +135,7 @@ public class Engine {
 
     /**
      * Adds a job directory to the Engine known jobConfigs if not extant.
+     * 添加爬虫目录到engine的jobConfigs中
      * 
      * @param dir directory to be added
      * @return true if directory successfully added, false for any failure
@@ -146,6 +154,7 @@ public class Engine {
             // no CXML file found!
             return false;
         }
+        // 重复判断吧??调用addJobDirectory之前就已经判断过了
         if(jobConfigs.containsKey(dir.getName())) {
             // same-name job already exists
             return false; 
@@ -154,7 +163,6 @@ public class Engine {
             try {
                 CrawlJob cj = new CrawlJob(cxml);            
                 if(!cj.getJobDir().getParentFile().equals(getJobsDir())) {
-                	// 为何还要添加，不是已经存在了吗?
                     writeJobPathFile(cj);
                 }
                 jobConfigs.put(cj.getShortName(),cj);

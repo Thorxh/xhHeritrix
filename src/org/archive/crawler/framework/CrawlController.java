@@ -205,6 +205,9 @@ implements Serializable,
     }
 
     /** whether to pause at crawl start */
+    /**
+     * 启动任务后是否暂停
+     */
     protected boolean pauseAtStart = true; 
     public boolean getPauseAtStart() {
         return pauseAtStart;

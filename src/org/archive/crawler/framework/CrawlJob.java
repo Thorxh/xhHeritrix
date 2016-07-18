@@ -90,14 +90,15 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
     protected int launchCount; 
     // Partial 不完整, 是否加载部分
     protected boolean isLaunchInfoPartial;
-    protected DateTime lastLaunch;
     protected AlertThreadGroup alertThreadGroup;
+    protected DateTime lastLaunch;
     
     protected DateTime xmlOkAt = new DateTime(0L);
     protected Logger jobLogger;
     
-    // 初始化成员变量File primaryConfig 是任务配置文件crawler-beans.cxml，boolean isLaunchInfoPartial是否加载部分，
-    // scanJobLog()扫描日志，AlertThreadGroup alertThreadGroup线程组（本身用于发布日志记录）
+    /**
+     * @param cxml 配置文件
+     */
     public CrawlJob(File cxml) {
         primaryConfig = cxml; 
         isLaunchInfoPartial = false;
@@ -155,6 +156,8 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
         return launchCount;
     }
     /**
+     * 统计已启动次数
+     * 
      * Refresh knowledge of total launched and last launch by scanning
      * the job.log. 
      */
@@ -169,7 +172,7 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
 
             Pattern launchLine = Pattern.compile("(\\S+) (\\S+) Job launched");
             long startPosition = 0; 
-            // ???
+            // 日志文件过大时跳过开头100KB
             if (jobLog.length() > FileUtils.ONE_KB * 100) {
                 isLaunchInfoPartial = true;
                 startPosition = jobLog.length()-(FileUtils.ONE_KB * 100);
@@ -240,6 +243,8 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
 
     /**
      * Is the primary XML config minimally well-formed? 
+     * 
+     * 判断xml配置文件是否完整
      */
     public void checkXML() {
         // TODO: suppress check if XML unchanged? job.log when XML changed? 
@@ -259,6 +264,8 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
     /**
      * Read a file to a DOM Document; return null if this isn't possible
      * for any reason.
+     * 
+     * 读取xml配置文件
      * 
      * @param f File of XML
      * @return org.w3c.dom.Document or null if problems encountered
@@ -280,6 +287,8 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
     /**
      * Is the primary config file legal XML?
      * 
+     * 判断xml配置文件是否合法
+     * 
      * @return true if the primary configuration file passed XML testing
      */
     public boolean isXmlOk() {
@@ -288,7 +297,9 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
     
     
     /**
-     * Can the configuration yield an assembled ApplicationContext? 
+     * Can the configuration yield an assembled ApplicationContext? <br> 
+     * 
+     * 初始化上下文(创建PathSharingContext)
      */
     public synchronized void instantiateContainer() {
         checkXML(); 
@@ -360,7 +371,9 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
     
     /**
      * Does the assembled ApplicationContext self-validate? Any failures
-     * are reported as WARNING log events in the job log. 
+     * are reported as WARNING log events in the job log. <br>
+     * 
+     * 初始化容器，验证配置是否正确，失败的地方被记录在job log中<br>
      * 
      * TODO: make these severe? 
      */
@@ -382,11 +395,15 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
     /**
      * Did the ApplicationContext self-validate? 
      * return true if validation passed without errors
+     * 
+     * 获取验证配置结果，返回true or false
+     * 
      */
     public synchronized boolean hasValidApplicationContext() {
         if(ac==null) {
             return false;
         }
+
         HashMap<String,Errors> allErrors = ac.getAllErrors();
         return allErrors != null && allErrors.isEmpty();
     }
@@ -397,6 +414,8 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
     
     /**
      * Launch a crawl into 'running' status, assembling if necessary. 
+     * 
+     * 启动爬虫任务
      * 
      * (Note the crawl may have been configured to start in a 'paused'
      * state.) 
@@ -457,9 +476,12 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
 
     /**
      * Start the context, catching and reporting any BeansExceptions.
+     * 
+     * 启动context， 记录日志
      */
     protected synchronized void startContext() {
         try {
+        	// 创建了目录，生成了默认配置文件及其他的一些工作
             ac.start(); 
             
             // job log file covering just this launch
@@ -540,7 +562,9 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
     }
     /**
      * Ensure a fresh start for any configuration changes or relaunches,
-     * by stopping and discarding an existing ApplicationContext.
+     * by stopping and discarding an existing ApplicationContext. <br>
+     * 
+     * 保证配置改变或者重新启动时已存在的ApplicationContext停止，放弃最后释放 <br>
      * 
      * @return true if teardown is complete when method returns, false if still in progress
      */
@@ -571,12 +595,16 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
         return !needTeardown; 
     }
 
-    // ac guaranteed to be null after this method is called
+    /**
+     *  ac guaranteed to be null after this method is called <br>
+     *  
+     *  释放相关资源，记录日志 <br>
+     */
     protected synchronized void doTeardown() {
         needTeardown = false;
 
         try {
-            if (ac != null) { 
+            if (ac != null) {
                 ac.close();
             }
         } finally {
@@ -615,7 +643,9 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
 
     /**
      * Return all config files included via 'import' statements in the
-     * primary config (or other included configs). 
+     * primary config (or other included configs). <br>
+     * 
+     * 返回配置文件中import的配置文件，包括import的配置文件中的import的配置文件
      * 
      * @param xml File to examine
      * @return List<File> of all transitively-imported Files
@@ -656,7 +686,9 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
 
     /**
      * Compute a path relative to the job directory for all contained 
-     * files, or null if the File is not inside the job directory. 
+     * files, or null if the File is not inside the job directory.  <br>
+     * 
+     * 处理文件路径使用'/'代替路径分隔符(windows下是'\')，并去除路径最前面可能存在的'/'
      * 
      * @param f File
      * @return path relative to the job directory, or null if File not 
@@ -706,6 +738,9 @@ public class CrawlJob implements Comparable<CrawlJob>, ApplicationListener<Appli
 
     /**
      * Is it reasonable to offer a launch button
+     * 
+     * 是否具备可以launch的条件
+     * 
      * @return true if launchable
      */
     public boolean isLaunchable() {
