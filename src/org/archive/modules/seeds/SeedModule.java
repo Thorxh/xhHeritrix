@@ -36,6 +36,10 @@ public abstract class SeedModule implements Serializable
      * which will be carried-forward to all URIs discovered on paths originating
      * from that seed. When present, such source tags appear in the
      * second-to-last crawl.log field.
+     * 
+     * <br><br>
+     * 
+     * 是否把种子作为可继承的源字符串，如果是，这个源字符串将被添加到所有以这个种子开始的路径上发现的URI。
      */
     protected boolean sourceTagSeeds = false;
     public boolean getSourceTagSeeds() {

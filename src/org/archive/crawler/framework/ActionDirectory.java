@@ -77,6 +77,11 @@ import org.springframework.context.Lifecycle;
  *  -  .overlay: add new overlay settings
  *  - .js .rb .bsh .rb etc - execute arbitrary script (a la ScriptedProcessor)
  * 
+ * <br><br>
+ * 
+ * 爬虫运行过程中动态载入种子、其他链接
+ * (通过线程按指定间隔扫描指定目录，依次处理扫描到的文件)
+ * 
  * @contributor gojomo
  */
 public class ActionDirectory implements ApplicationContextAware, Lifecycle, Runnable {
@@ -85,7 +90,13 @@ public class ActionDirectory implements ApplicationContextAware, Lifecycle, Runn
 
     protected ScheduledExecutorService executor;
 
-    /** how long after crawl start to first scan action directory */
+    /** 
+     * how long after crawl start to first scan action directory
+     * 
+     * <br><br>
+     * 
+     * 爬虫开始后首次扫描的延迟时间
+     */
     protected int initialDelaySeconds = 10;
     public int getInitialDelaySeconds() {
         return initialDelaySeconds;
@@ -93,7 +104,14 @@ public class ActionDirectory implements ApplicationContextAware, Lifecycle, Runn
     public void setInitialDelaySeconds(int initialDelay) {
         this.initialDelaySeconds = initialDelay;
     }
-    /** delay between scans of actionDirectory for new files */
+    
+    /** 
+     * delay between scans of actionDirectory for new files 
+     * 
+     * <br><br>
+     * 
+     * 扫描间隔时间
+     */
     protected int delaySeconds = 30;
     public int getDelaySeconds() {
         return delaySeconds;
@@ -102,6 +120,9 @@ public class ActionDirectory implements ApplicationContextAware, Lifecycle, Runn
         this.delaySeconds = delay;
     }
     
+    /**
+     * 被扫描的目录
+     */
     protected ConfigPath actionDir = 
         new ConfigPath("ActionDirectory source directory","action");
     public ConfigPath getActionDir() {
@@ -111,6 +132,9 @@ public class ActionDirectory implements ApplicationContextAware, Lifecycle, Runn
         this.actionDir = actionDir;
     }
     
+    /**
+     * done 目录
+     */
     protected ConfigPath doneDir = 
         new ConfigPath("ActionDirectory done directory","${launchId}/actions-done");
     public ConfigPath getDoneDir() {
@@ -182,8 +206,11 @@ public class ActionDirectory implements ApplicationContextAware, Lifecycle, Runn
     }
     
     /**
-     * Find any new files in the 'action' directory; process each in
-     * order. 
+     * Find any new files in the 'action' directory; process each in order.
+     * 
+     * <br><br>
+     * 
+     * 在action目录下寻找新文件并按顺序处理
      */
     protected void scanActionDirectory() {
         File dir = actionDir.getFile();

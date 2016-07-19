@@ -24,6 +24,10 @@ import org.archive.modules.CrawlURI;
  * Implemented by components which want notifications of 
  * seed list changes.
  * 
+ * <br><br>
+ * 
+ * 那些想在种子列表改变后获得通知的类实现这个接口(成为观察者)
+ * 
  * @author gojomo
  */
 public interface SeedListener {

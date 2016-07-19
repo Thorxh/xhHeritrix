@@ -48,6 +48,10 @@ import org.springframework.beans.factory.annotation.Required;
  * as a ConfigFile or ConfigString), and provides a mechanism for
  * adding seeds after a crawl has begun.
  *
+ * <br><br>
+ * 
+ * 该模块从一个文本源获得种子，并且提供了在爬取开始之后添加种子的机制
+ *
  * @contributor gojomo
  */
 public class TextSeedModule extends SeedModule 
@@ -59,6 +63,10 @@ implements ReadSource {
 
     /**
      * Text from which to extract seeds
+     * 
+     * <br><br>
+     * 
+     * 种子来源
      */
     protected ReadSource textSource = null;
     public ReadSource getTextSource() {
@@ -76,6 +84,12 @@ implements ReadSource {
      * lines continue to be processed in the background. Generally, this should
      * only be changed when working with very large seed lists, and scopes that
      * do *not* depend on reading all seeds. 
+     * 
+     * <br><br>
+     * 
+     * 在抓取之前，最初从seeds-source加载进来的行数。默认值是-1，意味着加载所有。任何其它值 
+     * 将会导致那个数量的行在抓取开始之前被加载进来，然而其余的行在后台被处理。通常情况下，这个 
+     * 值只有在有很多种子或者不依赖于读取所有种子的情况下才需要改变。 
      */
     protected int blockAwaitingSeedLines = -1;
     public int getBlockAwaitingSeedLines() {
@@ -95,11 +109,13 @@ implements ReadSource {
      */
     public void announceSeeds() {
         if(getBlockAwaitingSeedLines()>-1) {
+        	// CountDownLatch 的使用意义何在?
             final CountDownLatch latch = new CountDownLatch(getBlockAwaitingSeedLines());
             new Thread(){
                 @Override
                 public void run() {
                     announceSeeds(latch); 
+                    // 为什么要有这段代码???
                     while(latch.getCount()>0) {
                         latch.countDown();
                     }
@@ -148,6 +164,7 @@ implements ReadSource {
                 seedLine(s);
                 count++;
                 if(count%20000==0) {
+                	// 强制调用已经失去引用的对象的finalize方法
                     System.runFinalization();
                 }
             } else {
@@ -163,6 +180,10 @@ implements ReadSource {
     
     /**
      * Handle a read line that is probably a seed.
+     * 
+     * <br><br>
+     * 
+     * 处理可能是种子的读入行 
      * 
      * @param uri String seed-containing line
      */
@@ -191,6 +212,10 @@ implements ReadSource {
      * Handle a read line that is not a seed, but may still have
      * meaning to seed-consumers (such as scoping beans). 
      * 
+     * <br><br>
+     * 
+     * 处理一个不是种子但是对种子消费者还是有意义的的读入行 
+     * 
      * @param uri String seed-containing line
      */
     protected void nonseedLine(String line) {
@@ -200,6 +225,10 @@ implements ReadSource {
     /**
      * Treat the given file as a source of additional seeds,
      * announcing to SeedListeners.
+     * 
+     * <br><br>
+     * 
+     * 从一个给定文件读取种子，并告知给监听者
      * 
      * @see org.archive.modules.seeds.SeedModule#actOn(java.io.File)
      */
@@ -223,6 +252,14 @@ implements ReadSource {
      * scheduled in the Frontier for crawling -- it only 
      * affects the Scope's seed record (and decisions which
      * flow from seeds). 
+     *
+     *<br><br>
+     *
+     * 添加一个新的种子。默认情况下，只是把种子放到种子文件后面，子类 
+     * 可以有不同的处理方式。 
+     *  
+     * 这个方法不能使新的种子被Frontier调度。也就是说，新的种子被当做普通 
+     * 的种子对待。
      *
      * @param curi CandidateUri to add
      * @return true if successful, false if add failed for any reason
