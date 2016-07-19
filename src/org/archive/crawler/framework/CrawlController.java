@@ -62,6 +62,10 @@ import org.xbill.DNS.Lookup;
  * As the "global context" for a crawl, subcomponents will
  * often reach each other through the CrawlController.
  *
+ * <br><br>
+ *
+ * 控制中心，控制着爬虫的运行过程
+ *
  * @contributor gojomo
  */
 public class CrawlController 
@@ -195,7 +199,13 @@ implements Serializable,
         }
     }
     
-    /** whether to keep running (without pause or finish) when frontier is empty */
+    /**
+     * whether to keep running (without pause or finish) when frontier is empty
+     * 
+     * <br><br>
+     * 
+     * frontier为空是否保持运行
+     */
     protected boolean runWhileEmpty = false; 
     public boolean getRunWhileEmpty() {
         return runWhileEmpty;
@@ -204,8 +214,11 @@ implements Serializable,
         this.runWhileEmpty = runWhileEmpty;
     }
 
-    /** whether to pause at crawl start */
     /**
+     * whether to pause at crawl start
+     * 
+     * <br><br>
+     * 
      * 启动任务后是否暂停
      */
     protected boolean pauseAtStart = true; 
@@ -219,6 +232,10 @@ implements Serializable,
     /**
      * Size in bytes of in-memory buffer to record outbound traffic. One such 
      * buffer is reserved for every ToeThread. 
+     * 
+     * <br><br>
+     * 
+     * 缓冲区大小
      */
     protected int recorderOutBufferBytes = 16 * 1024; // 16KiB
     public int getRecorderOutBufferBytes() {
@@ -231,6 +248,10 @@ implements Serializable,
     /**
      * Size in bytes of in-memory buffer to record inbound traffic. One such 
      * buffer is reserved for every ToeThread.
+     * 
+     * <br><br>
+     * 
+     * 缓冲区大小
      */
     protected int recorderInBufferBytes = 512 * 1024; // 512KiB
     public int getRecorderInBufferBytes() {
@@ -266,6 +287,10 @@ implements Serializable,
 
     /**
      * Crawl exit status.
+     * 
+     * <br><br>
+     * 
+     * 爬虫退出状态
      */
     private transient CrawlStatus sExit = CrawlStatus.CREATED;
 
@@ -294,6 +319,7 @@ implements Serializable,
             return; 
         }
        
+        // 为什么异常结束??
         sExit = CrawlStatus.FINISHED_ABNORMAL;
 
         // force creation of DNS Cache now -- avoids CacheCleaner in toe-threads group
@@ -321,6 +347,11 @@ implements Serializable,
 
     /**
      * Send crawl change event to all listeners.
+     * 
+     * <br><br>
+     * 
+     * 发送爬虫状态改变事件给各个监听器
+     * 
      * @param newState State change we're to tell listeners' about.
      * @param message Message on state change.
      */
@@ -351,6 +382,10 @@ implements Serializable,
     
     /** 
      * Operator requested crawl begin
+     * 
+     * <br><br>
+     * 
+     * 请求启动爬虫
      */
     public void requestCrawlStart() {
         hasStarted = true; 
@@ -377,6 +412,10 @@ implements Serializable,
 
     /**
      * Called when the last toethread exits.
+     * 
+     * <br><br>
+     * 
+     * 最后一条线程退出时调用，生成快照、释放相关资源、发送通知
      */
     protected void completeStop() {
         if (!isRunning) {
@@ -431,6 +470,11 @@ implements Serializable,
         return isActive();
     }
 
+    
+    //
+    // 爬虫停止过程：先停止frontier，再停止toePool
+    //
+    
     /**
      * Operator requested for crawl to stop.
      */
@@ -467,6 +511,10 @@ implements Serializable,
 
     /**
      * Start the process of stopping the crawl. 
+     * 
+     * <br><br>
+     * 
+     * 停止frontier
      */
     public void beginCrawlStop() {
         LOGGER.fine("Started.");
@@ -479,7 +527,7 @@ implements Serializable,
     }
     
     /**
-     * Stop the crawl temporarly.
+     * Stop the crawl temporarily.
      */
     public synchronized void requestCrawlPause() {
         if (state == State.PAUSING || state == State.PAUSED) {
@@ -519,14 +567,16 @@ implements Serializable,
     
     /**
      * Resume crawl from paused state
+     * 
+     * <br><br>
+     * 
+     * 恢复爬虫
      */
     public void requestCrawlResume() {
         if (state != State.PAUSING && state != State.PAUSED) {
             // Can't resume if not been told to pause
             return;
         }
-        
-//        assert toePool != null;
         
         Frontier f = getFrontier();
         f.unpause();
@@ -581,6 +631,10 @@ implements Serializable,
     /**
      * Evaluate if the crawl should stop because it is finished,
      * without actually stopping the crawl.
+     * 
+     * <br><br>
+     * 
+     * 是否应该停止爬虫
      * 
      * @return true if crawl is at a finish-possible state
      */
