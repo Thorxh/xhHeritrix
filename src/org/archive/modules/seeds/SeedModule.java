@@ -59,6 +59,16 @@ public abstract class SeedModule implements Serializable
         this.seedListeners.addAll(seedListeners);
     }
     
+    /**
+     * 经测试得<br>
+     * SeedListeners:
+     * <ul>
+     * 		<li>SurtPrefixedDecideRule
+     * 		<li>StatisticsTracker
+     * 		<li>BdbFrontier
+     * 		<li>SurtPrefixedDecideRule
+     * </ul>
+     */
     protected void publishAddedSeed(CrawlURI curi) {
         for (SeedListener l: seedListeners) {
             l.addedSeed(curi);

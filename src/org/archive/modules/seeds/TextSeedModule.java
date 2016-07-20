@@ -52,6 +52,9 @@ import org.springframework.beans.factory.annotation.Required;
  * 
  * 该模块从一个文本源获得种子，并且提供了在爬取开始之后添加种子的机制
  *
+ * <br><br>
+ * 过程：从配置或者文件中读取种子，通过发送通知将种子加入到BdbFrontier(猜测，待验证)
+ * 
  * @contributor gojomo
  */
 public class TextSeedModule extends SeedModule 
