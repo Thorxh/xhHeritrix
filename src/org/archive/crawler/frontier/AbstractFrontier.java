@@ -100,7 +100,13 @@ public abstract class AbstractFrontier
         return kp;
     }
     
-    /** for retryable problems, seconds to wait before a retry */
+    /**
+     *  for retryable problems, seconds to wait before a retry
+     *  
+     *   <br><br>
+     *   
+     *   设置重试之前的等待时间
+     */
     {
         setRetryDelaySeconds(900);
     }
@@ -111,7 +117,13 @@ public abstract class AbstractFrontier
         kp.put("retryDelaySeconds",delay);
     }
     
-    /** maximum times to emit a CrawlURI without final disposition */
+    /**
+     * maximum times to emit(发出,发射,发行) a CrawlURI without final disposition
+     * 
+     * <br><br>
+     * 
+     * 没有做最终处理前的最大重试次数
+     */
     {
         setMaxRetries(30);
     }
@@ -124,6 +136,10 @@ public abstract class AbstractFrontier
     
     /**
      * Recover log on or off attribute.
+     * 
+     * <br><br>
+     * 
+     * 是否恢复日志
      */
     {
         setRecoveryLogEnabled(true);
@@ -135,6 +151,9 @@ public abstract class AbstractFrontier
         kp.put("recoveryLogEnabled",enabled);
     }
 
+    /**
+     * 最大外链数
+     */
     {
         setMaxOutlinks(6000);
     }
@@ -145,6 +164,9 @@ public abstract class AbstractFrontier
         kp.put("maxOutlinks", max);
     }
     
+    /**
+     * 是否单独抽取
+     */
     {
         setExtractIndependently(false);
     }
@@ -155,6 +177,9 @@ public abstract class AbstractFrontier
         kp.put("extractIndependently", extractIndependently);
     }
     
+    /**
+     * 是否抽取404页面
+     */
     {
         setExtract404s(true);
     }
@@ -222,7 +247,7 @@ public abstract class AbstractFrontier
         this.serverCache = serverCache;
     }
     
-    /** ordinal numbers to assign to created CrawlURIs */
+    /** ordinal(有序的) numbers to assign(分配) to created CrawlURIs */
     protected AtomicLong nextOrdinal = new AtomicLong(1);
 
     protected DecideRule scope;
@@ -244,11 +269,12 @@ public abstract class AbstractFrontier
     }
     
     /**
+     * 队列分配方案
+     * 
      * @param cauri CrawlURI we're to get a key for.
      * @return a String token representing a queue
      */
     public String getClassKey(CrawlURI curi) {
-        assert KeyedProperties.overridesActiveFrom(curi); 
         return preparer.getClassKey(curi);
     }
    
@@ -262,7 +288,9 @@ public abstract class AbstractFrontier
 
     protected AtomicLong failedFetchCount = new AtomicLong(0);
 
-    /** URIs that are disregarded (for example because of robot.txt rules */
+    /**
+     * URIs that are disregarded (for example because of robot.txt rules)
+     */
     protected AtomicLong disregardedUriCount = new AtomicLong(0);
     
     /**
@@ -275,6 +303,11 @@ public abstract class AbstractFrontier
      * 
      * Currently captures Frontier/URI transitions.
      * Can be null if user chose not to run a recovery.log.
+     * 
+     * <br><br>
+     * 
+     * 爬虫重新运行的Logger
+     * 
      */
     protected FrontierJournal recover = null;
     
@@ -288,14 +321,14 @@ public abstract class AbstractFrontier
 
     /** 
      * lock to allow holding all worker ToeThreads from taking URIs already
-     * on the outbound queue; they acquire read permission before take()ing;
+     * on the outbound queue; they acquire read permission before takeing;
      * frontier can acquire write permission to hold threads */
     protected ReentrantReadWriteLock outboundLock = 
         new ReentrantReadWriteLock(true);
     
     
     /**
-     * Distinguished frontier manager thread which handles all juggling
+     * Distinguished(著名的) frontier manager thread which handles all juggling
      * of URI queues and queues/maps of queues for proper ordering/delay of
      * URI processing. 
      */
@@ -307,7 +340,7 @@ public abstract class AbstractFrontier
     protected volatile State targetState = State.PAUSE;
 
     /**
-     * Start the dedicated thread with an independent view of the frontier's
+     * Start the dedicated(专注的) thread with an independent view of the frontier's
      * state. 
      */
     protected void startManagerThread() {
@@ -336,15 +369,20 @@ public abstract class AbstractFrontier
     
     /**
      * Main loop of frontier's managerThread. Only exits when State.FINISH 
-     * is requested (perhaps automatically at URI exhaustion) and reached. 
+     * is requested (perhaps automatically at URI exhaustion(枯竭)) and reached. 
      * 
-     * General strategy is to try to fill outbound queue, then process an
+     * General(一般的，普通的) strategy(策略) is to try to fill outbound queue, then process an
      * item from inbound queue, and repeat. A HOLD (to be implemented) or 
-     * PAUSE puts frontier into a stable state that won't be changed
+     * PAUSE puts frontier into a stable(稳定的) state that won't be changed
      * asynchronously by worker thread activity. 
+     * 
+     * <br><br>
+     * 
+     * frontier 的  managerThread 的主要循环，仅当 State.FINISH 状态被要求(也许URI
+     * 枯竭时自动被要求)和达到时退出。
+     * 
      */
     protected void managementTasks() {
-        assert Thread.currentThread() == managerThread;
         try {
             loop: while (true) {
                 try {
@@ -353,7 +391,7 @@ public abstract class AbstractFrontier
                     case EMPTY:
                         reachedState = State.EMPTY; 
                     case RUN:
-                        // enable outbound takes if previously locked
+                        // enable outbound takes if previously(以前，预先) locked
                         while(outboundLock.isWriteLockedByCurrentThread()) {
                             outboundLock.writeLock().unlock();
                         }
@@ -374,9 +412,10 @@ public abstract class AbstractFrontier
                         // TODO; for now treat same as PAUSE
                     case PAUSE:
                         // pausing
-                        // prevent all outbound takes
+                        // prevent(阻止) all outbound takes
                         outboundLock.writeLock().lock();
-                        // process all inbound
+                        // process(处理) all inbound
+                        // TODO 问题：死循环？
                         while (targetState == State.PAUSE) {
                             if (getInProcessCount()==0) {
                                 reachedState(State.PAUSE);
@@ -423,7 +462,7 @@ public abstract class AbstractFrontier
 
 
     /**
-     * Perform any tasks necessary before entering 
+     * Perform(执行) any tasks necessary before entering 
      * FINISH frontier state/FINISHED crawl state
      */
     protected void finalTasks() {
@@ -434,7 +473,11 @@ public abstract class AbstractFrontier
      * The given state has been reached; if it is a new state, generate
      * a notification to the CrawlController. 
      * 
-     * TODO: evaluate making this a generic notification others can sign up for
+     * <br><br>
+     * 
+     * 如果是新的状态就向 CrawlController 发送一条通知
+     * 
+     * TODO: evaluate(评估) making this a generic notification others can sign up for
      */
     protected void reachedState(State justReached) {
         if(justReached != lastReachedState) {
@@ -444,14 +487,19 @@ public abstract class AbstractFrontier
         }
     }
     
-    /* (non-Javadoc)
+    /** 
      * @see org.archive.crawler.framework.Frontier#next()
+     * 
+     * <br><br>
+     * 
+     * 返回下一个合格的URI
      */
     public CrawlURI next() throws InterruptedException {
         CrawlURI crawlable = null;
         while(crawlable==null) {
             outboundLock.readLock().lockInterruptibly();
             // try filling outbound until we get something to work on
+            // Eligible 合格的
             crawlable = findEligibleURI();
             outboundLock.readLock().unlock();
         }
@@ -461,13 +509,18 @@ public abstract class AbstractFrontier
     /**
      * Find a CrawlURI eligible to be put on the outbound queue for 
      * processing. If none, return null. 
+     * 
+     * <br><br>
+     * 
+     * 找到一个合格的 CrawlURI
+     * 
      * @return the eligible URI, or null
      */
     abstract protected CrawlURI findEligibleURI();
     
     
     /**
-     * Schedule the given CrawlURI regardless of its already-seen status. Only
+     * Schedule(安排) the given CrawlURI regardless of(不管,不顾) its already-seen status. Only
      * to be called inside the managerThread, as by an InEvent. 
      * 
      * @param caUri CrawlURI to schedule
@@ -483,8 +536,8 @@ public abstract class AbstractFrontier
     abstract protected void processScheduleIfUnique(CrawlURI caUri);
     
     /**
-     * Handle the given CrawlURI as having finished a worker ToeThread 
-     * processing attempt. May result in the URI being rescheduled or
+     * Handle(处理) the given CrawlURI as having finished a worker ToeThread 
+     * processing attempt. May result in the URI being rescheduled(重新安排) or
      * logged as successful or failed. Only to be called inside the 
      * managerThread, as by an InEvent. 
      * 
@@ -512,14 +565,19 @@ public abstract class AbstractFrontier
     abstract protected long getMaxInWait();
     
     /**
-     * Arrange for the given CrawlURI to be visited, if it is not
+     * Arrange for(为…做准备,安排) the given CrawlURI to be visited, if it is not
      * already scheduled/completed.
      * 
-     * This implementation defers uniqueness-testing into the frontier 
+     * This implementation defers(推迟) uniqueness-testing into the frontier 
      * managerThread with a ScheduleIfUnique InEvent; this may cause 
-     * unnecessary contention/single-threading. WorkQueueFrontier currently
-     * overrides as an experiment in decreasing contention. TODO: settle on
-     * one approach. 
+     * unnecessary contention(争论)/single-threading. WorkQueueFrontier currently(当前,一般地)
+     * overrides as an experiment(实验,尝试) in decreasing contention. 
+     * 
+     * <br><br>
+     * 
+     * 安排给定的 CrawlURI 来被访问
+     * 
+     * TODO: settle on one approach. 
      *
      * @see org.archive.crawler.framework.Frontier#schedule(org.archive.modules.CrawlURI)
      */
@@ -611,6 +669,8 @@ public abstract class AbstractFrontier
     /**
      * Report CrawlURI to each of the three 'substats' accumulators
      * (group/queue, server, host) for a given stage.
+     * 
+     * tally(记录)
      * 
      * @param curi
      * @param stage
@@ -792,6 +852,10 @@ public abstract class AbstractFrontier
      * When notified of a seed via the SeedListener interface, 
      * schedule it.
      * 
+     * <br><br>
+     * 
+     * 当被 SeedListener 通知了 seed 时
+     * 
      * @see org.archive.modules.seeds.SeedListener#addedSeed(org.archive.modules.CrawlURI)
      */
     public void addedSeed(CrawlURI puri) {
@@ -800,6 +864,11 @@ public abstract class AbstractFrontier
     
     /** 
      * Do nothing with non-seed lines
+     * 
+     * <br><br>
+     * 
+     * 对于非种子行不作处理
+     * 
      * @see org.archive.modules.seeds.SeedListener#nonseedLine(java.lang.String)
      */
     public boolean nonseedLine(String line) {
@@ -810,6 +879,11 @@ public abstract class AbstractFrontier
         // do nothing;
     }
 
+    /**
+     * 为 CrawlURI 生成序号
+     * 
+     * @param curi
+     */
     protected void prepForFrontier(CrawlURI curi) {
         if (curi.getOrdinal() == 0) {
             curi.setOrdinal(nextOrdinal.getAndIncrement());
@@ -836,6 +910,10 @@ public abstract class AbstractFrontier
     /**
      * Return a suitable value to wait before retrying the given URI.
      * 
+     * <br><br>
+     * 
+     * 延迟重试时间
+     * 
      * @param curi
      *            CrawlURI to be retried
      * @return millisecond delay before retry
@@ -850,6 +928,10 @@ public abstract class AbstractFrontier
     /**
      * Take note of any processor-local errors that have been entered into the
      * CrawlURI.
+     * 
+     * <br><br>
+     * 
+     * 记录非致命错误
      * 
      * @param curi
      *  
@@ -983,6 +1065,10 @@ public abstract class AbstractFrontier
      * Import URIs from either a simple (one URI per line) or crawl.log
      * format.
      * 
+     * <br><br>
+     * 
+     * 导入 URI
+     * 
      * @param params JSONObject of options to control import
      * @see org.archive.crawler.framework.Frontier#importURIs(java.util.Map)
      */
@@ -1049,6 +1135,10 @@ public abstract class AbstractFrontier
     /**
      * Log to the main crawl.log
      * 
+     * <br><br>
+     * 
+     * 记录到 crawl.log
+     * 
      * @param curi
      */
     protected void log(CrawlURI curi) {
@@ -1074,9 +1164,13 @@ public abstract class AbstractFrontier
     }
 
     /**
-     * Checks if a recently processed CrawlURI that did not finish successfully
+     * Checks if a recently(最近) processed CrawlURI that did not finish successfully
      * needs to be reenqueued (and thus possibly, processed again after some 
      * time elapses)
+     * 
+     * <br><br>
+     * 
+     * 最近处理未成功的 CrawlURI 是否需要重新入队列
      * 
      * @param curi
      *            The CrawlURI to check
@@ -1090,7 +1184,7 @@ public abstract class AbstractFrontier
         switch (curi.getFetchStatus()) {
         case HttpStatus.SC_UNAUTHORIZED:
             // We can get here though usually a positive status code is
-            // a success. We get here if there is rfc2617 credential data
+            // a success. We get here if there is rfc2617 credential(证书) data
             // loaded and we're supposed to go around again. See if any
             // rfc2617 credential present and if there, assume it got
             // loaded in FetchHTTP on expectation that we're to go around

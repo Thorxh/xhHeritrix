@@ -28,6 +28,10 @@ import org.archive.spring.KeyedProperties;
 /**
  * Establishes a mapping from CrawlURIs to String keys (queue names).
  * 
+ * <br><br>
+ * 
+ * CrawlURIs队列分配方案
+ * 
  * @author gojomo
  */
 public abstract class QueueAssignmentPolicy implements Serializable, HasKeyedProperties {
@@ -57,6 +61,11 @@ public abstract class QueueAssignmentPolicy implements Serializable, HasKeyedPro
      * Note that changes to the CrawlURI, or its associated 
      * components (such as CrawlServer), may change its queue
      * assignment.
+     * 
+     * <br><br>
+     * 
+     * 返回队列分配方案
+     * 
      * @param controller This crawls' controller.
      * 
      * @param cauri CandidateURI to calculate class key for.
@@ -67,6 +76,10 @@ public abstract class QueueAssignmentPolicy implements Serializable, HasKeyedPro
     /**
      * Returns the maximum number of different keys this policy
      * can create. If there is no maximum, -1 is returned (default).
+     * 
+     * <br><br>
+     * 
+     * 最大不同方案生成数量
      * 
      * @return  Maximum number of different keys, or -1 if unbounded.
      */

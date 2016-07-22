@@ -415,7 +415,7 @@ implements Serializable,
      * 
      * <br><br>
      * 
-     * 最后一条线程退出时调用，生成快照、释放相关资源、发送通知
+     * 最后一个线程退出时调用，生成快照、释放相关资源、发送通知
      */
     protected void completeStop() {
         if (!isRunning) {

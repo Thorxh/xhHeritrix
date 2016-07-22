@@ -47,7 +47,7 @@ import com.sleepycat.util.RuntimeExceptionWrapper;
 
 
 /**
- * A BerkeleyDB-database-backed structure for holding ordered
+ * A BerkeleyDB-database-backed structure(结构) for holding ordered
  * groupings of CrawlURIs. Reading the groupings from specific
  * per-grouping (per-classKey/per-Host) starting points allows
  * this to act as a collection of independent queues. 
@@ -55,6 +55,10 @@ import com.sleepycat.util.RuntimeExceptionWrapper;
  * <p>For how the bdb keys are made, see {@link #calculateInsertKey(CrawlURI)}.
  * 
  * <p>TODO: refactor, improve naming.
+ * 
+ * <br><br>
+ * 
+ * 对Berkeley DB做简单封装，存储着所有待处理链接
  * 
  * @author gojomo
  */
@@ -65,7 +69,13 @@ public class BdbMultipleWorkQueues {
     private static final Logger LOGGER =
         Logger.getLogger(BdbMultipleWorkQueues.class.getName());
     
-    /** Database holding all pending URIs, grouped in virtual queues */
+    /** 
+     * Database holding all pending URIs, grouped in virtual queues
+     * 
+     * <br><br>
+     * 
+     * 存放所有待处理URL的数据库
+     */
     private Database pendingUrisDB = null;
     
     /**  Supporting bdb serialization of CrawlURIs */
@@ -73,6 +83,8 @@ public class BdbMultipleWorkQueues {
 
     /**
      * Create the multi queue in the given environment. 
+     * 
+     * Catalog(目录,登记)
      * 
      * @param env bdb environment to use
      * @param classCatalog Class catalog to use.
@@ -96,6 +108,10 @@ public class BdbMultipleWorkQueues {
 
     /**
      * Delete all CrawlURIs matching the given expression.
+     * 
+     * <br><br>
+     * 
+     * 删除所有与给定表达式匹配的CrawlURI
      * 
      * @param match
      * @param queue
@@ -229,13 +245,17 @@ public class BdbMultipleWorkQueues {
     }
     
     /**
-     * Get the next nearest item after the given key. Relies on 
-     * external discipline -- we'll look at the queues count of how many
+     * Get the next nearest item after the given key. Relies on(依赖于) 
+     * external discipline(学科,纪律,训练,惩罚) -- we'll look at the queues count of how many
      * items it has -- to avoid asking for something from a
-     * range where there are no associated items --
+     * range where there are no associated(关联的) items --
      * otherwise could get first item of next 'queue' by mistake. 
      * 
      * <p>TODO: hold within a queue's range
+     * 
+     * <br><br>
+     * 
+     * 获取一个链接
      * 
      * @param headKey Key prefix that demarks the beginning of the range
      * in <code>pendingUrisDB</code> we're interested in.
@@ -322,6 +342,10 @@ public class BdbMultipleWorkQueues {
     /**
      * Put the given CrawlURI in at the appropriate place. 
      * 
+     * <br><br>
+     * 
+     * 将给定的 CrawlURI 放到数据库中合适的地方
+     * 
      * @param curi
      * @throws DatabaseException
      */
@@ -356,6 +380,13 @@ public class BdbMultipleWorkQueues {
     
     /**
      * Log average size of database entry.
+     * <br>
+     * tally(记录)
+     * 
+     * <br><br>
+     * 
+     * 记录数据库 entry 的平均大小
+     * 
      * @param curi CrawlURI this entry is for.
      * @param value Database entry value.
      */
@@ -378,7 +409,7 @@ public class BdbMultipleWorkQueues {
     }
 
     /**
-     * Calculate the 'origin' key for a virtual queue of items
+     * Calculate the 'origin'(起源,原点) key for a virtual queue of items
      * with the given classKey. This origin key will be a 
      * prefix of the keys for all items in the queue. 
      * 
@@ -403,12 +434,12 @@ public class BdbMultipleWorkQueues {
     
     /**
      * Calculate the insertKey that places a CrawlURI in the
-     * desired spot. First bytes are always classKey (usu. host)
+     * desired(渴望的) spot. First bytes are always classKey (usu. host)
      * based -- ensuring grouping by host -- terminated by a zero
      * byte. Then 8 bytes of data ensuring desired ordering 
      * within that 'queue' are used. The first byte of these 8 is
      * priority -- allowing 'immediate' and 'soon' items to 
-     * sort above regular. Next 1 byte is 'precedence'. Last 6 bytes 
+     * sort above regular. Next 1 byte is 'precedence'(优先级). Last 6 bytes 
      * are ordinal serial number, ensuring earlier-discovered 
      * URIs sort before later. 
      * 
@@ -476,6 +507,10 @@ public class BdbMultipleWorkQueues {
      * Delete the given CrawlURI from persistent store. Requires
      * the key under which it was stored be available. 
      * 
+     * <br><br>
+     * 
+     * 删除 CrawlURI
+     * 
      * @param item
      * @throws DatabaseException
      */
@@ -500,6 +535,11 @@ public class BdbMultipleWorkQueues {
      * sufficent).
      * <p>Package access only because only Frontiers of this package would ever
      * need access.
+     * 
+     * <br><br>
+     * 
+     * 同步数据到磁盘
+     * 
      * @see <a href="http://www.sleepycat.com/jedocs/GettingStartedGuide/DB.html">Deferred Write Databases</a>
      */
     protected void sync() {
@@ -544,7 +584,7 @@ public class BdbMultipleWorkQueues {
     }
     
     /**
-     * Utility method to perform action for all pending CrawlURI instances.
+     * Utility(通用的) method to perform action for all pending CrawlURI instances.
      * @param c Closure action to perform
      * @throws DatabaseException
      */

@@ -34,15 +34,14 @@ import org.archive.modules.SchedulingConstants;
 import org.archive.modules.canonicalize.RulesCanonicalizationPolicy;
 import org.archive.modules.canonicalize.UriCanonicalizationPolicy;
 import org.archive.net.UURI;
-import org.archive.spring.KeyedProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Processor to preload URI with as much precalculated policy-based 
+ * Processor to preload(预加载) URI with as much precalculated(预先计算的) policy-based 
  * info as possible before it reaches frontier criticial sections.
  * 
  * Frontiers also maintain a direct reference to this class, in case
- * they need to perform remedial preparation for URIs that do not
+ * they need to perform remedial(补救的) preparation for URIs that do not
  * pass through this processor on the CandidateChain.
  * 
  * @contributor gojomo
@@ -56,8 +55,8 @@ public class FrontierPreparer extends Scoper {
      * priority scheduling than any remaining seed. For example, if set to 1
      * items one hop (link, embed, redirect, etc.) away from a seed will be
      * scheduled with HIGH priority. If set to -1, no preferencing will occur,
-     * and a breadth-first search with seeds processed before discovered links
-     * will proceed. If set to zero, a purely depth-first search will proceed,
+     * and a breadth-first search(宽度优先搜索) with seeds processed before discovered links
+     * will proceed. If set to zero, a purely(纯粹的,完全的) depth-first search(深度优先搜索) will proceed,
      * with all discovered links processed before remaining seeds. Seed
      * redirects are treated as one hop from a seed.
      */
@@ -165,6 +164,7 @@ public class FrontierPreparer extends Scoper {
         curi.setSchedulingDirective(getSchedulingDirective(curi));
             
         // set canonicalized version
+        // Canonical 权威的
         curi.setCanonicalString(canonicalize(curi));
         
         // set queue key
@@ -173,7 +173,7 @@ public class FrontierPreparer extends Scoper {
         // set cost
         curi.setHolderCost(getCost(curi));
         
-        // set URI precedence
+        // set URI precedence(优先)
         getUriPrecedencePolicy().uriScheduled(curi);
 
 
@@ -221,7 +221,7 @@ public class FrontierPreparer extends Scoper {
         }
     }
     /**
-     * Canonicalize passed CrawlURI. This method differs from
+     * Canonicalize(规范化转换) passed CrawlURI. This method differs from
      * {@link #canonicalize(UURI)} in that it takes a look at
      * the CrawlURI context possibly overriding any canonicalization effect if
      * it could make us miss content. If canonicalization produces an URL that
@@ -262,7 +262,6 @@ public class FrontierPreparer extends Scoper {
      * @return a String token representing a queue
      */
     public String getClassKey(CrawlURI curi) {
-        assert KeyedProperties.overridesActiveFrom(curi);      
         String queueKey = getQueueAssignmentPolicy().getClassKey(curi);
         return queueKey;
     }
@@ -275,8 +274,6 @@ public class FrontierPreparer extends Scoper {
      * @return the associated cost
      */
     protected int getCost(CrawlURI curi) {
-        assert KeyedProperties.overridesActiveFrom(curi);
-        
         int cost = curi.getHolderCost();
         if (cost == CrawlURI.UNCALCULATED) {
             cost = getCostAssignmentPolicy().costOf(curi);

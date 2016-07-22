@@ -34,6 +34,10 @@ import java.util.logging.Logger;
  * accessors (like getProp() and setProp()) will only pass-through
  * to the 'prop' entry in this map.)
  * 
+ * <br><br>
+ * 
+ * Map - 用来保存可覆盖的配置
+ * 
  */
 public class KeyedProperties extends ConcurrentHashMap<String,Object> {
     private static final long serialVersionUID = 3403222335436162778L;
@@ -134,7 +138,6 @@ public class KeyedProperties extends ConcurrentHashMap<String,Object> {
     }
     
     static public void loadOverridesFrom(OverlayContext ocontext) {
-        assert ocontext.haveOverlayNamesBeenSet();
         pushOverrideContext(ocontext);
     }
     
