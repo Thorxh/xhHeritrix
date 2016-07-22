@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  * 
  * An object wanting to allow its properties to be overridden 
  * contextually will store those properties in this map. Its 
- * accessors (like getProp() and setProp()) will only pass-through
+ * accessors(访问器,函数) (like getProp() and setProp()) will only pass-through
  * to the 'prop' entry in this map.)
  * 
  * <br><br>

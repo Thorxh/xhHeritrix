@@ -32,18 +32,18 @@ import org.springframework.beans.factory.annotation.Required;
 
 
 /**
- * Collection of overrides: alternative values for object properties
- * that should apply in some contexts. The target is specified as an
- * arbitrarily-long property-path, a string describing how to access 
+ * Collection of overrides: alternative(供选择的) values for object properties
+ * that should apply in some contexts. The target is specified(规定的,详细说明的) as an
+ * arbitrarily(武断地；反复无常地)-long property-path, a string describing how to access 
  * the property starting from a beanName in a BeanFactory. 
  * 
  * Once a Sheet has all its mappings, and all beans that could be
  * affected by its mappings have been instantiated, the sheet must 
- * be 'primed' with respect to the bean factory. This step lets
+ * be 'primed'(待发的) with respect to(关于；考虑；尊敬；关心) the bean factory. This step lets
  * every target of the overlay values know the full bean-path(s) 
  * that it should check for overlays. (Otherwise, beans -- especially
  * unnamed inner beans -- may not know the full-paths that lead to
- * their properties.) Also, this step catches in advance type 
+ * their properties.) Also, this step catches in advance(预先，提前) type 
  * mismatches, or attempts to overlay non-overlayable properties. 
  *
  */
@@ -59,7 +59,8 @@ public class Sheet implements BeanFactoryAware, BeanNameAware {
      */
     protected String name; 
     protected BeanFactory beanFactory; 
-    /** map of full property-paths (from BeanFactory to individual 
+    /**
+     * map of full property-paths (from BeanFactory to individual 
      * property) and their changed value when this Sheet of overrides
      * is in effect
      */

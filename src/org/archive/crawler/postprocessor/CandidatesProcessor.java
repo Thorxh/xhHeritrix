@@ -165,7 +165,7 @@ public class CandidatesProcessor extends Processor {
         candidate.setFullVia(source); 
         sheetOverlaysManager.applyOverlaysTo(candidate);
         try {
-            KeyedProperties.clearOverridesFrom(source); 
+            KeyedProperties.clearOverridesFrom(source);  
             KeyedProperties.loadOverridesFrom(candidate);
             
             // apply special seed-status promotion

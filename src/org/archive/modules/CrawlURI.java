@@ -135,7 +135,12 @@ implements Reporter, Serializable, OverlayContext {
     private boolean isSeed = false;
 
     
-    /** String of letters indicating how this URI was reached from a seed.
+    /** String of letters indicating(表明) how this URI was reached from a seed.
+     * 
+     * <br><br>
+     * 
+     * 表明当前链接从怎样从种子中抽出来的字符串
+     * 
      * <pre>
      * P precondition
      * R redirection
