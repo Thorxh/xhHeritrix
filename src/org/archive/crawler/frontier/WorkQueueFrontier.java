@@ -89,13 +89,13 @@ implements Closeable,
     /**
      * If we know that only a small amount of queues is held in memory,
      * we can avoid using a disk-based BigMap.
-     * This only works efficiently if the WorkQueue does not hold its
+     * This only works efficiently(有效的) if the WorkQueue does not hold its
      * entries in memory as well.
      */ 
     private static final int MAX_QUEUES_TO_HOLD_ALLQUEUES_IN_MEMORY = 3000;
 
     /**
-     * When a snooze target for a queue is longer than this amount, the queue
+     * When a snooze(小睡,打盹) target for a queue is longer than this amount, the queue
      * will be "long snoozed" instead of "short snoozed".  A "long snoozed"
      * queue may be swapped to disk because it's not needed soon.  
      */
@@ -116,7 +116,7 @@ implements Closeable,
         this.appCtx = (AbstractApplicationContext)applicationContext;
     }
 
-    /** amount to replenish budget on each activation (duty cycle) */
+    /** amount(数量) to replenish(补充,再填满) budget(预算) on each activation (duty cycle) */
     {
         setBalanceReplenishAmount(3000);
     }
@@ -128,7 +128,7 @@ implements Closeable,
     }
 
 
-    /** budget penalty for an error fetch */
+    /** budget penalty for(罚金) an error fetch */
     {
         setErrorPenaltyAmount(100);
     }
@@ -139,7 +139,7 @@ implements Closeable,
         kp.put("errorPenaltyAmount",penalty);
     }
 
-    /** total expenditure to allow a queue before 'retiring' it  */
+    /** total expenditure(支出,花费) to allow a queue before 'retiring'(退休) it  */
     {
         setQueueTotalBudget(-1L);
     }
@@ -150,7 +150,11 @@ implements Closeable,
         kp.put("queueTotalBudget",budget);
     }
     
-    /** queue precedence assignment policy to use. */
+    /** queue precedence(优先) assignment policy to use. 
+     * 
+     * <p>队列优先分配政策
+     * 
+     */
     {
         setQueuePrecedencePolicy(new BaseQueuePrecedencePolicy());
     }
@@ -161,7 +165,11 @@ implements Closeable,
         kp.put("queuePrecedencePolicy",policy);
     }
 
-    /** precedence rank at or below which queues are not crawled */
+    /** 
+     * precedence rank at or below which queues are not crawled
+     * 
+     * <p>队列等级范围，等于或小于这个等级的队列不被爬取
+     */
     protected int precedenceFloor = 255; 
     public int getPrecedenceFloor() {
         return this.precedenceFloor;
@@ -170,7 +178,7 @@ implements Closeable,
         this.precedenceFloor = floor;
     }
 
-    /** truncate reporting of queues at this large but not unbounded number */
+    /** truncate(把...截断,缩短) reporting of queues at this large but not unbounded(不受限制的) number */
     protected int maxQueuesPerReportCategory = 2000; 
     public int getMaxQueuesPerReportCategory() {
         return this.maxQueuesPerReportCategory;
@@ -185,7 +193,7 @@ implements Closeable,
     // of classKey -> ClassKeyQueue
 
     /**
-     * All per-class queues whose first item may be handed out.
+     * All per-class queues whose first item may be handed out(分发).
      * Linked-list of keys for the queues.
      */
     protected BlockingQueue<String> readyClassQueues;
@@ -202,12 +210,16 @@ implements Closeable,
     protected AtomicInteger snoozedOverflowCount = new AtomicInteger(0); 
     protected static int MAX_SNOOZED_IN_MEMORY = 10000; 
     
-    /** URIs scheduled to be re-enqueued at future date */
+    /** URIs scheduled to be re-enqueued at future date
+     *
+     * <p>被安排在将来时间重新入队列的 URI
+     * 
+     */
     protected StoredSortedMap<Long, CrawlURI> futureUris; 
     
     /** remember keys of small number of largest queues for reporting */
     transient protected TopNSet largestQueues = new TopNSet(20);
-    /** remember this many largest queues for reporting's sake; actual tracking
+    /** remember this many largest queues for reporting's sake(目的，理由); actual tracking
      *  can be somewhat approximate when some queues shrink before others' 
      *  sizes are again noted, or if the size is adjusted mid-crawl. */
     public int getLargestQueuesCount() {

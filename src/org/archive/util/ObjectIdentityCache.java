@@ -25,36 +25,54 @@ import java.util.Set;
 /**
  * An object cache for create-once-by-name-and-then-reuse objects. 
  * 
- * Objects are added, but never removed. Subsequent get()s using the 
- * same key will return the exact same object, UNLESS all such objects
+ * Objects are added, but never removed. Subsequent(后来的,随后的) get()s using the 
+ * same key will return the exact(准确的) same object, UNLESS all such objects
  * have been forgotten, in which case a new object MAY be returned. 
  * 
  * This allows implementors (such as ObjectIdentityBdbCache or 
- * CachedBdbMap) to page out (aka 'expunge') instances to
+ * CachedBdbMap) to page out (aka(又叫做 also known as) 'expunge'(擦去,删掉)) instances to
  * persistent storage while they're not being used. However, as long as
  * they are used (referenced), all requests for the same-named object
  * will share a reference to the same object, and the object may be
- * mutated in place without concern for explicitly persisting its
+ * mutated(改变) in place without concern for(关心) explicitly(明确地,明白地) persisting its
  * state to disk.  
+ * 
+ * <p>create-once-by-name-and-then-reuse 对象缓存
  * 
  * @param <V>
  */
 public interface ObjectIdentityCache<V extends IdentityCacheable> extends Closeable {
     /** get the object under the given key/name -- but should not mutate 
-     * object state*/
+     * object state
+     * 
+     * <p>返回给定 key/name 对应的对象
+     * 
+     */
     public abstract V get(final String key);
     
     /** get the object under the given key/name, using (and remembering)
-     * the object supplied by the supplier if no prior mapping exists 
-     * -- but should not mutate object state */
+     * the object supplied(提供) by the supplier if no prior(优先的,在前的) mapping exists 
+     * -- but should not mutate object state
+     * 
+     * <p>返回给定 key/name 对应的对象，如果没有已存在的 mapping ，则在 supplierOrNull 中查找
+     * 
+     */
     public abstract V getOrUse(final String key, Supplier<V> supplierOrNull);
 
     /** force the persistent backend, if any, to be updated with all 
-     * live object state */ 
+     * live object state
+     *
+     * <p>强制持久化后端更新所有 live object 的状态
+     * 
+     */ 
     public abstract void sync();
     
     /** force the persistent backend, if any, to eventually be updated with 
-     * live object state for the given key */ 
+     * live object state for the given key 
+     * 
+     * <p>强制持久化后端更新给定key对应的 live object 的状态
+     * 
+     */ 
     public abstract void dirtyKey(final String key);
 
     /** close/release any associated resources */ 

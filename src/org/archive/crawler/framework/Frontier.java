@@ -107,6 +107,10 @@ public interface Frontier extends Lifecycle, Reporter {
      * Get the next URI that should be processed. If no URI becomes availible
      * during the time specified null will be returned.
      *
+     * <br><br>
+     *
+     * 获取下一个应该被处理的 URI ，如果在指定时间内没有则返回 null
+     *
      * @return the next URI that should be processed.
      * @throws InterruptedException
      */
@@ -119,6 +123,10 @@ public interface Frontier extends Lifecycle, Reporter {
      * (ready to be emitted), URIs belonging to deferred hosts or pending URIs
      * in the Frontier. Thus this method may return false even if there is no
      * currently availible URI.
+     *
+     * <br><br>
+     * 
+     * 如果 frontier 不包含要爬取的 URI 则返回 true
      *
      * @return true if the frontier contains no more URIs to crawl.
      */
@@ -134,6 +142,13 @@ public interface Frontier extends Lifecycle, Reporter {
      *
      * <p>This method should be synchronized in all implementing classes.
      *
+     * <p>安排一个 CrawlURI
+     * 
+     * <p>此方法接受一个 URI 并且立即安排这个 URI。被安排的 URI 的优先级在这没有作用。
+     * URI 仅仅会被他们各自的队列立刻替换。
+     * 
+     * <p>此方法应该在各个实现类中实现同步
+     * 
      * @param caURI The URI to schedule.
      *
      * @see CrawlURI#setSchedulingDirective(int)
@@ -147,7 +162,11 @@ public interface Frontier extends Lifecycle, Reporter {
      * their assigned URI.
      *
      * <p>This method is synchronized.
-     *
+     * 
+     * <p>当 URI 完成处理后报告已被处理了
+     * 
+     * <p>当被分配的 URI 处理完成后，ToeThreads会调用此方法
+     * 
      * @param cURI The URI that has finished processing.
      */
     public void finished(CrawlURI cURI);
@@ -168,7 +187,9 @@ public interface Frontier extends Lifecycle, Reporter {
      * <i>in process</i> and <i>finished</i> items combined due to duplicate
      * URIs being queued and processed. This variance is likely to be especially
      * high in Frontiers implementing 'revist' strategies.
-     *
+     * 
+     * <p>发现的 URI 数量
+     * 
      * @return Number of discovered URIs.
      */
     public long discoveredUriCount();
@@ -180,12 +201,16 @@ public interface Frontier extends Lifecycle, Reporter {
      * is any <i>discovered</i> URI that has not either been processed or is
      * being processed. The same discovered URI can be queued multiple times.
      *
+     * <p>队列中等待被处理的 URI 数量
+     *
      * @return Number of queued URIs.
      */
     public long queuedUriCount();
 
     
     /**
+     * 将被处理的 URI 数量
+     * 
      * @return Number of URIs not currently queued/eligible but scheduled for future
      */
     public long futureUriCount(); 
@@ -195,6 +220,8 @@ public interface Frontier extends Lifecycle, Reporter {
      * for crawling. Essentially, the length of the longest
      * frontier internal queue. 
      * 
+     * <p> frontier 内部队列的深度
+     * 
      * @return long URI count to deepest URI
      */
     public long deepestUri(); // aka longest queue
@@ -203,14 +230,18 @@ public interface Frontier extends Lifecycle, Reporter {
      * Average depth of the last URI in all eligible queues.
      * That is, the average length of all eligible queues.
      * 
+     * <p>队列平均深度
+     * 
      * @return long average depth of last URIs in queues 
      */
     public long averageDepth(); // aka average queue length
     
     /**
-     * Ratio of number of threads that would theoretically allow
+     * Ratio(比例) of number of threads that would theoretically(理论上) allow
      * maximum crawl progress (if each was as productive as current
      * threads), to current number of threads.
+     * 
+     * <p>线程拥挤比例
      * 
      * @return float congestion ratio 
      */
@@ -223,7 +254,9 @@ public interface Frontier extends Lifecycle, Reporter {
      * processed (excluding those that failed but will be retried). Does not
      * include those URIs that have been 'forgotten' (deemed out of scope when
      * trying to fetch, most likely due to operator changing scope definition).
-     *
+     * 
+     * <p>已处理完成的 URI 数量
+     * 
      * @return Number of finished URIs.
      */
     public long finishedUriCount();
@@ -234,7 +267,9 @@ public interface Frontier extends Lifecycle, Reporter {
      * <p>Any URI that was processed successfully. This includes URIs that
      * returned 404s and other error codes that do not originate within the
      * crawler.
-     *
+     * 
+     * <p>成功处理的 URI 数量
+     * 
      * @return Number of <i>successfully</i> processed URIs.
      */
     public long succeededFetchCount();
@@ -247,7 +282,9 @@ public interface Frontier extends Lifecycle, Reporter {
      * establish a connection with the host and any number of other problems.
      * Does not count those that will be retried, only those that have
      * permenantly failed.
-     *
+     * 
+     * <p>处理失败的 URI 数量
+     * 
      * @return Number of URIs that failed to process.
      */
     public long failedFetchCount();
@@ -259,7 +296,9 @@ public interface Frontier extends Lifecycle, Reporter {
      * <p>Counts any URI that is scheduled only to be disregarded
      * because it is determined to lie outside the scope of the crawl. Most
      * commonly this will be due to robots.txt exclusions.
-     *
+     * 
+     * <p>忽略的 URI 数量
+     * 
      * @return The number of URIs that have been disregarded.
      */
     public long disregardedUriCount();
@@ -304,6 +343,8 @@ public interface Frontier extends Lifecycle, Reporter {
      * recovery-log import.)
      * 
      * TODO: add parameter for auto-unpause-at-good-time
+     * 
+     * <p>从文件中导入 URI
      * 
      * @param params Map describing source file and options as above
      * @throws IOException If problems occur reading file.
@@ -416,6 +457,8 @@ public interface Frontier extends Lifecycle, Reporter {
      * this method is executing. The crawler should be in a paused state before
      * invoking it.
      *
+     * <p>删除匹配的 URI ，此操作不能避免这些删除了的链接再次被发现
+     *
      * @param match A regular expression, any URIs that matches it will be
      *              deleted.
      * @return The number of URIs deleted
@@ -428,6 +471,8 @@ public interface Frontier extends Lifecycle, Reporter {
      * Notify Frontier that a CrawlURI has been deleted outside of the
      * normal next()/finished() lifecycle. 
      * 
+     * <p>通知 Frontier ，CrawlURI 被删除了
+     * 
      * @param curi Deleted CrawlURI.
      */
     public void deleted(CrawlURI curi);
@@ -436,6 +481,8 @@ public interface Frontier extends Lifecycle, Reporter {
      * Notify Frontier that it should consider the given UURI as if
      * already scheduled.
      * 
+     * <p>通知 Frontier 应该考虑这个给定的 UURI 似乎已经被安排了
+     * 
      * @param u UURI instance to add to the Already Included set.
      */
     public void considerIncluded(CrawlURI curi);
@@ -443,12 +490,18 @@ public interface Frontier extends Lifecycle, Reporter {
     /**
      * Notify Frontier that it should not release any URIs, instead
      * holding all threads, until instructed otherwise. 
+     * 
+     * <p>暂停
+     * <p>通知 Frontier 不应该释放 URI ，相反保持所有线程直到受到另外的指示
      */
     public void pause();
 
     /**
      * Resumes the release of URIs to crawl, allowing worker
      * ToeThreads to proceed. 
+     * 
+     * <p>继续/取消暂停
+     * 
      */
     public void unpause();
 
@@ -456,6 +509,8 @@ public interface Frontier extends Lifecycle, Reporter {
      * Notify Frontier that it should end the crawl, giving
      * any worker ToeThread that askss for a next() an 
      * EndedException. 
+     * 
+     * <p>终止
      */
     public void terminate();
     
@@ -466,27 +521,36 @@ public interface Frontier extends Lifecycle, Reporter {
     public FrontierJournal getFrontierJournal();
     
     /**
+     * 获取分类关键字
+     * 
      * @param cauri CrawlURI for which we're to calculate and
      * set class key.
      * @return Classkey for <code>cauri</code>.
      */
     public String getClassKey(CrawlURI cauri);
 
-    /*
+    /**
      * Return the internally-configured crawl 'scope' (rules for
-     * deciding whether a URI is crawled or not). 
+     * deciding whether a URI is crawled or not).
+     * 
+     * <p>获取链接范围(决定链接是否被爬取的过滤规则)
      */
     public DecideRule getScope();
 
     /**
      * Request that Frontier allow crawling to begin. Usually
      * just unpauses Frontier, if paused. 
+     * 
+     * <p>请求 Frontier 允许爬虫开始，如果爬虫已经暂停则取消暂停
      */
     public void run();
 
     /**
      * Get the 'frontier group' (usually queue) for the given 
      * CrawlURI. 
+     * 
+     * <p>获取给定 CrawlURI 的frontier group(一般就是队列)
+     * 
      * @param curi CrawlURI to find matching group
      * @return FrontierGroup for the CrawlURI
      */
@@ -506,6 +570,8 @@ public interface Frontier extends Lifecycle, Reporter {
      * when a later notification is given the CrawlController has the state
      * actually been reached.)
      * 
+     * <p>请求 Frontier 尽快到达给定状态
+     * 
      * @param target Frontier.State to pursue
      */
     public void requestState(State target);
@@ -524,7 +590,7 @@ public interface Frontier extends Lifecycle, Reporter {
     }
 
     /**
-     * Inform frontier that a block of processing that should complete atomically
+     * Inform(通知) frontier that a block of processing that should complete atomically
      * with respect to checkpoints is about to begin. Callers should ensure an
      * endDisposition() call soon follows; a mismatch risks freezing the frontier
      * if a checkpoint is requested. 

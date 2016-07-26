@@ -342,6 +342,8 @@ public abstract class AbstractFrontier
     /**
      * Start the dedicated(专注的) thread with an independent view of the frontier's
      * state. 
+     * 
+     * <p>启动管理线程
      */
     protected void startManagerThread() {
         managerThread = new Thread(this+".managerThread") {
@@ -378,7 +380,7 @@ public abstract class AbstractFrontier
      * 
      * <br><br>
      * 
-     * frontier 的  managerThread 的主要循环，仅当 State.FINISH 状态被要求(也许URI
+     * frontier 的  managerThread 的主要循环，仅当 State.FINISH 状态被要求(也可能是URI
      * 枯竭时自动被要求)和达到时退出。
      * 
      */
@@ -523,6 +525,8 @@ public abstract class AbstractFrontier
      * Schedule(安排) the given CrawlURI regardless of(不管,不顾) its already-seen status. Only
      * to be called inside the managerThread, as by an InEvent. 
      * 
+     * <p>安排指定的 CrawlURI 不管它的已经出现过的状态
+     * 
      * @param caUri CrawlURI to schedule
      */
     abstract protected void processScheduleAlways(CrawlURI caUri);
@@ -530,6 +534,8 @@ public abstract class AbstractFrontier
     /**
      * Schedule the given CrawlURI if not already-seen. Only
      * to be called inside the managerThread, as by an InEvent. 
+     * 
+     * <p>安排给定的 CrawlURI ，如果之前没有出现过
      * 
      * @param caUri CrawlURI to schedule
      */
@@ -550,6 +556,8 @@ public abstract class AbstractFrontier
      * queue and not yet finished by returning through the inbound
      * queue.)
      * 
+     * <p>获取正在处理中的 CrawlURI 数量
+     * 
      * @return number of in-process CrawlURIs
      */
     abstract protected int getInProcessCount();
@@ -560,6 +568,9 @@ public abstract class AbstractFrontier
      * giving up and rechecking on the ability to further fill the outbound
      * queue. If any queues are waiting out politeness/retry delays ('snoozed'),
      * the maximum wait should be no longer than the shortest sch delay. 
+     * 
+     * <p>返回最长等待时间
+     * 
      * @return maximum time to wait, in milliseconds
      */
     abstract protected long getMaxInWait();
@@ -602,6 +613,9 @@ public abstract class AbstractFrontier
      * Choose a per-classKey queue and enqueue it. If this
      * item has made an unready queue ready, place that 
      * queue on the readyClassQueues queue. 
+     * 
+     * <p>接受指定 CrawlURI 来安排，假设已经经过了 alreadyIncluded 过滤器
+     * 
      * @param caUri CrawlURI.
      */
     public void receive(CrawlURI curi) {
@@ -622,7 +636,9 @@ public abstract class AbstractFrontier
      * The CrawlURI may be scheduled to retry, if appropriate,
      * and other related URIs may become eligible for release
      * via the next next() call, as a result of finished().
-     *
+     * 
+     * <p>CrawlURI 已处理完成
+     * 
      *  (non-Javadoc)
      * @see org.archive.crawler.framework.Frontier#finished(org.archive.modules.CrawlURI)
      */
@@ -667,7 +683,7 @@ public abstract class AbstractFrontier
     }
     
     /**
-     * Report CrawlURI to each of the three 'substats' accumulators
+     * Report CrawlURI to each of the three 'substats' accumulators(累加器；积聚者)
      * (group/queue, server, host) for a given stage.
      * 
      * tally(记录)
@@ -755,7 +771,7 @@ public abstract class AbstractFrontier
     }
 
     /**
-     * Increment the running count of queued URIs. 
+     * Increment(数量) the running count of queued URIs. 
      */
     protected void incrementQueuedUriCount() {
         queuedUriCount.incrementAndGet();
@@ -854,7 +870,7 @@ public abstract class AbstractFrontier
      * 
      * <br><br>
      * 
-     * 当被 SeedListener 通知了 seed 时
+     * 当被 SeedListener 通知了 seed 时，安排通知获得的 CrawlURI
      * 
      * @see org.archive.modules.seeds.SeedListener#addedSeed(org.archive.modules.CrawlURI)
      */
@@ -891,7 +907,7 @@ public abstract class AbstractFrontier
     }
 
     /**
-     * Perform fixups on a CrawlURI about to be returned via next().
+     * Perform(执行，完成) fixups(修正) on a CrawlURI about to be returned via next().
      * 
      * @param curi
      *            CrawlURI about to be returned by next()
